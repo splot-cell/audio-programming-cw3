@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="NO4KJo" name="CWDelay" displaySplashScreen="1" reportAppUsage="1"
+              splashScreenColour="Dark" projectType="audioplug" version="1.0.0"
+              bundleIdentifier="com.yourcompany.CWDelay" includeBinaryInAppConfig="1"
+              cppLanguageStandard="11" companyCopyright="" buildVST="1" buildVST3="0"
+              buildAU="1" buildAUv3="0" buildRTAS="0" buildAAX="0" buildStandalone="1"
+              enableIAA="0" pluginName="CWDelay" pluginDesc="CWDelay" pluginManufacturer="yourcompany"
+              pluginManufacturerCode="Manu" pluginCode="No4k" pluginChannelConfigs=""
+              pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
+              pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0" pluginAUExportPrefix="CWDelayAU"
+              pluginRTASCategory="" aaxIdentifier="com.yourcompany.CWDelay"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="5.2.0">
+  <MAINGROUP id="wNR8V0" name="CWDelay">
+    <GROUP id="{49A20CC3-170E-F126-B0FE-1A249EF2E4AF}" name="Source">
+      <FILE id="Lbywjr" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="lYxuzx" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="C1AWoJ" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="YLX4S0" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" enablePluginBinaryCopyStep="1" isDebug="1" optimisation="1"
+                       linkTimeOptimisation="0" targetName="CWDelay"/>
+        <CONFIGURATION name="Release" enablePluginBinaryCopyStep="1" isDebug="0" optimisation="3"
+                       linkTimeOptimisation="1" targetName="CWDelay"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../../../../../../../../SoftwareDev/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../../../../../SoftwareDev/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../../../../../SoftwareDev/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../../../../../SoftwareDev/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../../../../../SoftwareDev/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../../../../../SoftwareDev/JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../../../../../../../SoftwareDev/JUCE/modules"/>
+        <MODULEPATH id="juce_video" path="../../../../../../../../SoftwareDev/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../../../../../../../SoftwareDev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../../../../../../SoftwareDev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../../../../../SoftwareDev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../../../../../SoftwareDev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../../../../../SoftwareDev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../../../../../../SoftwareDev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../../../../../SoftwareDev/JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
+</JUCERPROJECT>
