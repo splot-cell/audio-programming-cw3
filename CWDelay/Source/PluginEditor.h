@@ -33,7 +33,8 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class CwdelayAudioProcessorEditor  : public AudioProcessorEditor
+class CwdelayAudioProcessorEditor  : public AudioProcessorEditor,
+                                     public Slider::Listener
 {
 public:
     //==============================================================================
@@ -46,6 +47,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void sliderValueChanged (Slider* sliderThatWasMoved) override;
 
 
 
@@ -55,6 +57,8 @@ private:
     //[/UserVariables]
 
     //==============================================================================
+    ScopedPointer<Slider> inputGainSlider;
+    ScopedPointer<Label> inputGainLabel;
 
 
     //==============================================================================

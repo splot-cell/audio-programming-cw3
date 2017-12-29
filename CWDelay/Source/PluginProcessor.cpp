@@ -25,6 +25,10 @@ CwdelayAudioProcessor::CwdelayAudioProcessor()
                        )
 #endif
 {
+    addParameter (inputGain = new AudioParameterFloat ("inputGain",                             // ID
+                                                       "Input Gain",                            // name
+                                                       NormalisableRange<float> (0.0f, 1.0f),   // set range
+                                                       0.5f));                                  // default value
 }
 
 CwdelayAudioProcessor::~CwdelayAudioProcessor()
@@ -96,8 +100,7 @@ void CwdelayAudioProcessor::changeProgramName (int index, const String& newName)
 //==============================================================================
 void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    previousInputGain = *inputGain;
 }
 
 void CwdelayAudioProcessor::releaseResources()
@@ -135,6 +138,19 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
     ScopedNoDenormals noDenormals;
     const int totalNumInputChannels  = getTotalNumInputChannels();
     const int totalNumOutputChannels = getTotalNumOutputChannels();
+    
+    /* Apply ramp to gain changes to avoid glitches from fast parameter changes. */
+    const float currentInputGain = *inputGain;
+    
+    if (currentInputGain == previousInputGain)
+    {
+        buffer.applyGain(currentInputGain);
+    }
+    else
+    {
+        buffer.applyGainRamp (0, buffer.getNumSamples(), previousInputGain, currentInputGain);
+        previousInputGain = currentInputGain;
+    }
 
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
@@ -169,15 +185,12 @@ AudioProcessorEditor* CwdelayAudioProcessor::createEditor()
 //==============================================================================
 void CwdelayAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    MemoryOutputStream (destData, true).writeFloat (*inputGain);
 }
 
 void CwdelayAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    *inputGain = MemoryInputStream (data, static_cast<size_t> (sizeInBytes), false).readFloat();
 }
 
 //==============================================================================
