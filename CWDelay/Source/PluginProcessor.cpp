@@ -36,10 +36,18 @@ CwdelayAudioProcessor::CwdelayAudioProcessor()
                                       nullptr,
                                       nullptr);
     
-    parameters.createAndAddParameter ("outputGain",                              // ID
-                                      "Output Gain",                             // name
+    parameters.createAndAddParameter ("outputGain",                             // ID
+                                      "Output Gain",                            // name
                                       String(),                                 // suffix
                                       NormalisableRange<float> (0.0f, 1.0f),    // set range
+                                      0.5f,                                     // default value
+                                      nullptr,
+                                      nullptr);
+    
+    parameters.createAndAddParameter ("delayTime",                              // ID
+                                      "Delay Time",                             // name
+                                      "s",                                      // suffix
+                                      NormalisableRange<float> (0.001f, 1.0f),  // set range
                                       0.5f,                                     // default value
                                       nullptr,
                                       nullptr);
@@ -118,6 +126,8 @@ void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
 {
     previousInputGain = *parameters.getRawParameterValue("inputGain");
     previousOutputGain = *parameters.getRawParameterValue("outputGain");
+    delay.prepareDelayLine (sampleRate, getTotalNumInputChannels());
+    delay.setDelaySize (*parameters.getRawParameterValue ("delayTime"));
 }
 
 void CwdelayAudioProcessor::releaseResources()
@@ -156,6 +166,8 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
     const int totalNumInputChannels  = getTotalNumInputChannels();
     const int totalNumOutputChannels = getTotalNumOutputChannels();
     
+    delay.setDelaySize (*parameters.getRawParameterValue ("delayTime"));
+    
     /* Apply ramp to gain changes to avoid glitches from fast parameter changes. */
     {
         const float currentInputGain = *parameters.getRawParameterValue("inputGain");
@@ -184,9 +196,7 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
     // audio processing...
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
-        float* channelData = buffer.getWritePointer (channel);
-
-        // ..do something to the data...
+        delay.processAudio (buffer, channel);
     }
     
     /* Apply ramp to gain changes to avoid glitches from fast parameter changes. */

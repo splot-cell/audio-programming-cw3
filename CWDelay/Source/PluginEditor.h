@@ -65,6 +65,10 @@ private:
     Label outputGainLabel;
     Slider outputGainSlider;
     ScopedPointer<SliderAttachment> outputGainAttachment;
+    
+    Label delayTimeLabel;
+    Slider delayTimeSlider;
+    ScopedPointer<SliderAttachment> delayTimeAttachment;
     //[/UserVariables]
 
     //==============================================================================

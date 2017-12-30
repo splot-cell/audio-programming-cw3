@@ -58,6 +58,14 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     addAndMakeVisible (outputGainSlider);
     outputGainAttachment = new SliderAttachment (valueTreeState, "outputGain", outputGainSlider);
     ++numberOfSliders;
+    
+    delayTimeLabel.setText ("Delay Time", dontSendNotification);
+    addAndMakeVisible (delayTimeLabel);
+    
+    delayTimeSlider.setSliderStyle (juce::Slider::LinearBarVertical);
+    addAndMakeVisible (delayTimeSlider);
+    delayTimeAttachment = new SliderAttachment (valueTreeState, "delayTime", delayTimeSlider);
+    ++numberOfSliders;
     //[/Constructor_pre]
 
 
@@ -110,6 +118,9 @@ void CwdelayAudioProcessorEditor::resized()
         
         outputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
         outputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
+        
+        delayTimeLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
+        delayTimeSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
     }
     //[/UserPreResize]
 
