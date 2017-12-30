@@ -55,10 +55,15 @@ public:
     //==============================================================================
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
+    
+    //==============================================================================
 
 private:
     //==============================================================================
+    AudioProcessorValueTreeState parameters;
+    
+    float previousInputGain;
+    float previousOutputGain;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CwdelayAudioProcessor)
-    AudioParameterFloat* inputGain;
-    float previousInputGaim;
 };

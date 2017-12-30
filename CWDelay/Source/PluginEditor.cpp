@@ -25,29 +25,40 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
+enum
+{
+    parameterSliderMinHeight = 200,
+    parameterSliderWidth = 40,
+    parameterLabelSpacing = 8,
+    parameterLabelWidth = 80,
+    parameterLabelHeight = 24,
+    parameterPercentagePadding = 10
+};
 //[/MiscUserDefs]
 
 //==============================================================================
-CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor& p)
-    : AudioProcessorEditor (&p), processor (p)
+CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor& p, AudioProcessorValueTreeState& vts)
+    : AudioProcessorEditor (&p), processor (p), valueTreeState (vts)
 {
     //[Constructor_pre] You can add your own custom stuff here..
+    numberOfSliders = 0;
+    
+    inputGainLabel.setText ("Input Gain", dontSendNotification);
+    addAndMakeVisible (inputGainLabel);
+    
+    inputGainSlider.setSliderStyle (juce::Slider::LinearBarVertical);
+    addAndMakeVisible (inputGainSlider);
+    inputGainAttachment = new SliderAttachment (valueTreeState, "inputGain", inputGainSlider);
+    ++numberOfSliders;
+    
+    outputGainLabel.setText ("Output Gain", dontSendNotification);
+    addAndMakeVisible (outputGainLabel);
+    
+    outputGainSlider.setSliderStyle (juce::Slider::LinearBarVertical);
+    addAndMakeVisible (outputGainSlider);
+    outputGainAttachment = new SliderAttachment (valueTreeState, "outputGain", outputGainSlider);
+    ++numberOfSliders;
     //[/Constructor_pre]
-
-    addAndMakeVisible (inputGainSlider = new Slider ("Input Gain"));
-    inputGainSlider->setTooltip (TRANS("Change the input level"));
-    inputGainSlider->setRange (0, 1, 0);
-    inputGainSlider->setSliderStyle (Slider::LinearBarVertical);
-    inputGainSlider->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
-    inputGainSlider->addListener (this);
-
-    addAndMakeVisible (inputGainLabel = new Label ("Input Gain Label",
-                                                   TRANS("Input Gain")));
-    inputGainLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
-    inputGainLabel->setJustificationType (Justification::centred);
-    inputGainLabel->setEditable (false, false, false);
-    inputGainLabel->setColour (TextEditor::textColourId, Colours::black);
-    inputGainLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
 
     //[UserPreSize]
@@ -65,8 +76,6 @@ CwdelayAudioProcessorEditor::~CwdelayAudioProcessorEditor()
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
 
-    inputGainSlider = nullptr;
-    inputGainLabel = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -88,50 +97,29 @@ void CwdelayAudioProcessorEditor::paint (Graphics& g)
 void CwdelayAudioProcessorEditor::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
+    Rectangle<int> r = getLocalBounds();
+    {
+        Rectangle<int> sliderArea = r.reduced (r.getWidth() * 0.01 * parameterPercentagePadding, r.getHeight() * 0.01 * parameterPercentagePadding);
+        Rectangle<int> labelArea = sliderArea.removeFromBottom (parameterLabelHeight);
+        sliderArea.removeFromBottom (parameterLabelSpacing);
+        
+        const float horizontalSpacing = sliderArea.getWidth() / numberOfSliders;
+        
+        inputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
+        inputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
+        
+        outputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
+        outputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
+    }
     //[/UserPreResize]
 
-    inputGainSlider->setBounds (40, 104, 40, 200);
-    inputGainLabel->setBounds (16, 312, 80, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
-}
-
-void CwdelayAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
-{
-    //[UsersliderValueChanged_Pre]
-    //[/UsersliderValueChanged_Pre]
-
-    if (sliderThatWasMoved == inputGainSlider)
-    {
-        //[UserSliderCode_inputGainSlider] -- add your slider handling code here..
-        processor->inputGain = (float) inputGainSlider->getValue();
-        //[/UserSliderCode_inputGainSlider]
-    }
-
-    //[UsersliderValueChanged_Post]
-    //[/UsersliderValueChanged_Post]
 }
 
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-AudioParameterFloat* getParameterForSlider (Slider* slider)
-{
-    const OwnedArray<AudioProcessorParameter>& params = getAudioProcessor()->getParameters();
-    return dynamic_cast<AudioParameterFloat*> (params[paramSliders.indexOf (slider)]);
-}
-
-void Slider::Listener::sliderDragStarted (Slider* slider) override
-{
-    if (AudioParameterFloat* param = getParameterForSlider (slider))
-        param->beginChangeGesture();
-}
-
-void Slider::Listener::sliderDragEnded (Slider* slider) override
-{
-    if (AudioParameterFloat* param = getParameterForSlider (slider))
-        param->endChangeGesture();
-}
 //[/MiscUserCode]
 
 
@@ -146,20 +134,11 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="CwdelayAudioProcessorEditor"
                  componentName="" parentClasses="public AudioProcessorEditor"
-                 constructorParams="CwdelayAudioProcessor&amp; p" variableInitialisers="AudioProcessorEditor (&amp;p), processor (p)"
+                 constructorParams="CwdelayAudioProcessor&amp; p, AudioProcessorValueTreeState&amp; vts"
+                 variableInitialisers="AudioProcessorEditor (&amp;p), processor (p), valueTreeState (vts)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="ff323e44"/>
-  <SLIDER name="Input Gain" id="ffbb1bc7392db120" memberName="inputGainSlider"
-          virtualName="" explicitFocusOrder="0" pos="40 104 40 200" tooltip="Change the input level"
-          min="0" max="1" int="0" style="LinearBarVertical" textBoxPos="NoTextBox"
-          textBoxEditable="0" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
-          needsCallback="1"/>
-  <LABEL name="Input Gain Label" id="d1a5405df03b1826" memberName="inputGainLabel"
-         virtualName="" explicitFocusOrder="0" pos="16 312 80 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="Input Gain" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="16"
-         kerning="0" bold="0" italic="0" justification="36"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

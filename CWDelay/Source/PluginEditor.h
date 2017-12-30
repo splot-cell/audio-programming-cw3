@@ -33,32 +33,41 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class CwdelayAudioProcessorEditor  : public AudioProcessorEditor,
-                                     public Slider::Listener
+class CwdelayAudioProcessorEditor  : public AudioProcessorEditor
 {
 public:
     //==============================================================================
-    CwdelayAudioProcessorEditor (CwdelayAudioProcessor& p);
+    CwdelayAudioProcessorEditor (CwdelayAudioProcessor& p, AudioProcessorValueTreeState& vts);
     ~CwdelayAudioProcessorEditor();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
+    typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void sliderValueChanged (Slider* sliderThatWasMoved) override;
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     CwdelayAudioProcessor& processor;
+
+    AudioProcessorValueTreeState& valueTreeState;
+    int numberOfSliders; // For easy distribution of controls within the plugin window.
+
+    Label inputGainLabel;
+    Slider inputGainSlider;
+    ScopedPointer<SliderAttachment> inputGainAttachment;
+
+    Label outputGainLabel;
+    Slider outputGainSlider;
+    ScopedPointer<SliderAttachment> outputGainAttachment;
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<Slider> inputGainSlider;
-    ScopedPointer<Label> inputGainLabel;
 
 
     //==============================================================================

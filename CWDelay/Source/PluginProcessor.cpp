@@ -22,13 +22,29 @@ CwdelayAudioProcessor::CwdelayAudioProcessor()
                       #endif
                        .withOutput ("Output", AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),
 #endif
+    parameters (*this, nullptr)
 {
-    addParameter (inputGain = new AudioParameterFloat ("inputGain",                             // ID
-                                                       "Input Gain",                            // name
-                                                       NormalisableRange<float> (0.0f, 1.0f),   // set range
-                                                       0.5f));                                  // default value
+
+    
+    parameters.createAndAddParameter ("inputGain",                              // ID
+                                      "Input Gain",                             // name
+                                      String(),                                 // suffix
+                                      NormalisableRange<float> (0.0f, 1.0f),    // set range
+                                      0.5f,                                     // default value
+                                      nullptr,
+                                      nullptr);
+    
+    parameters.createAndAddParameter ("outputGain",                              // ID
+                                      "Output Gain",                             // name
+                                      String(),                                 // suffix
+                                      NormalisableRange<float> (0.0f, 1.0f),    // set range
+                                      0.5f,                                     // default value
+                                      nullptr,
+                                      nullptr);
+    
+    parameters.state = ValueTree (Identifier ("OllySAPCW3"));
 }
 
 CwdelayAudioProcessor::~CwdelayAudioProcessor()
@@ -100,7 +116,8 @@ void CwdelayAudioProcessor::changeProgramName (int index, const String& newName)
 //==============================================================================
 void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    previousInputGain = *inputGain;
+    previousInputGain = *parameters.getRawParameterValue("inputGain");
+    previousOutputGain = *parameters.getRawParameterValue("outputGain");
 }
 
 void CwdelayAudioProcessor::releaseResources()
@@ -140,16 +157,18 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
     const int totalNumOutputChannels = getTotalNumOutputChannels();
     
     /* Apply ramp to gain changes to avoid glitches from fast parameter changes. */
-    const float currentInputGain = *inputGain;
+    {
+        const float currentInputGain = *parameters.getRawParameterValue("inputGain");
     
-    if (currentInputGain == previousInputGain)
-    {
-        buffer.applyGain(currentInputGain);
-    }
-    else
-    {
-        buffer.applyGainRamp (0, buffer.getNumSamples(), previousInputGain, currentInputGain);
-        previousInputGain = currentInputGain;
+        if (currentInputGain == previousInputGain)
+        {
+            buffer.applyGain(currentInputGain);
+        }
+        else
+        {
+            buffer.applyGainRamp (0, buffer.getNumSamples(), previousInputGain, currentInputGain);
+            previousInputGain = currentInputGain;
+        }
     }
 
     // In case we have more outputs than inputs, this code clears any output
@@ -169,6 +188,21 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
 
         // ..do something to the data...
     }
+    
+    /* Apply ramp to gain changes to avoid glitches from fast parameter changes. */
+    {
+        const float currentOutputGain = *parameters.getRawParameterValue("outputGain");;
+    
+        if (currentOutputGain == previousOutputGain)
+        {
+            buffer.applyGain(currentOutputGain);
+        }
+        else
+        {
+            buffer.applyGainRamp (0, buffer.getNumSamples(), previousOutputGain, currentOutputGain);
+            previousOutputGain = currentOutputGain;
+        }
+    }
 }
 
 //==============================================================================
@@ -179,18 +213,22 @@ bool CwdelayAudioProcessor::hasEditor() const
 
 AudioProcessorEditor* CwdelayAudioProcessor::createEditor()
 {
-    return new CwdelayAudioProcessorEditor (*this);
+    return new CwdelayAudioProcessorEditor (*this, parameters);
 }
 
 //==============================================================================
 void CwdelayAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    MemoryOutputStream (destData, true).writeFloat (*inputGain);
+    ScopedPointer<XmlElement> xml (parameters.state.createXml());
+    copyXmlToBinary (*xml, destData);
 }
 
 void CwdelayAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    *inputGain = MemoryInputStream (data, static_cast<size_t> (sizeInBytes), false).readFloat();
+    ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+    if (xmlState != nullptr)
+        if (xmlState->hasTagName (parameters.state.getType()))
+            parameters.state = ValueTree::fromXml (*xmlState);
 }
 
 //==============================================================================
