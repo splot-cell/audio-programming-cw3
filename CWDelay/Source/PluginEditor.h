@@ -69,6 +69,10 @@ private:
     Label delayTimeLabel;
     Slider delayTimeSlider;
     ScopedPointer<SliderAttachment> delayTimeAttachment;
+    
+    Label feedbackLabel;
+    Slider feedbackSlider;
+    ScopedPointer<SliderAttachment> feedbackAttachment;
     //[/UserVariables]
 
     //==============================================================================

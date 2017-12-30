@@ -66,6 +66,14 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     addAndMakeVisible (delayTimeSlider);
     delayTimeAttachment = new SliderAttachment (valueTreeState, "delayTime", delayTimeSlider);
     ++numberOfSliders;
+    
+    feedbackLabel.setText ("Feedback", dontSendNotification);
+    addAndMakeVisible (feedbackLabel);
+    
+    feedbackSlider.setSliderStyle (juce::Slider::LinearBarVertical);
+    addAndMakeVisible (feedbackSlider);
+    feedbackAttachment = new SliderAttachment (valueTreeState, "feedback", feedbackSlider);
+    ++numberOfSliders;
     //[/Constructor_pre]
 
 
@@ -116,11 +124,14 @@ void CwdelayAudioProcessorEditor::resized()
         inputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
         inputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
         
-        outputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
-        outputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
-        
         delayTimeLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
         delayTimeSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
+        
+        feedbackLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
+        feedbackSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
+        
+        outputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
+        outputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
     }
     //[/UserPreResize]
 

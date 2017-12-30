@@ -23,6 +23,8 @@ public:
     
     void setDelaySize (float time);
     
+    void setFeedback (float fb);
+    
     VariableDelayLine() : feedback (0.f) {}
     
 protected:

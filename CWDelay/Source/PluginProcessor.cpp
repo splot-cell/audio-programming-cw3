@@ -52,6 +52,14 @@ CwdelayAudioProcessor::CwdelayAudioProcessor()
                                       nullptr,
                                       nullptr);
     
+    parameters.createAndAddParameter ("feedback",                               // ID
+                                      "Feedback",                               // name
+                                      String(),                                 // suffix
+                                      NormalisableRange<float> (0.0f, 1.0f),    // set range
+                                      0.0f,                                     // default value
+                                      nullptr,
+                                      nullptr);
+    
     parameters.state = ValueTree (Identifier ("OllySAPCW3"));
 }
 
@@ -128,6 +136,7 @@ void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     previousOutputGain = *parameters.getRawParameterValue("outputGain");
     delay.prepareDelayLine (sampleRate, getTotalNumInputChannels());
     delay.setDelaySize (*parameters.getRawParameterValue ("delayTime"));
+    delay.setFeedback (*parameters.getRawParameterValue ("feedback"));
 }
 
 void CwdelayAudioProcessor::releaseResources()
@@ -167,6 +176,7 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
     const int totalNumOutputChannels = getTotalNumOutputChannels();
     
     delay.setDelaySize (*parameters.getRawParameterValue ("delayTime"));
+    delay.setFeedback (*parameters.getRawParameterValue ("feedback"));
     
     /* Apply ramp to gain changes to avoid glitches from fast parameter changes. */
     {
