@@ -26,8 +26,6 @@ CwdelayAudioProcessor::CwdelayAudioProcessor()
 #endif
     parameters (*this, nullptr)
 {
-
-    
     parameters.createAndAddParameter ("inputGain",                              // ID
                                       "Input Gain",                             // name
                                       String(),                                 // suffix
@@ -35,6 +33,7 @@ CwdelayAudioProcessor::CwdelayAudioProcessor()
                                       0.5f,                                     // default value
                                       nullptr,
                                       nullptr);
+    parameters.addParameterListener ("inputGain", this);
     
     parameters.createAndAddParameter ("outputGain",                             // ID
                                       "Output Gain",                            // name
@@ -223,6 +222,12 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
             previousOutputGain = currentOutputGain;
         }
     }
+}
+
+//==============================================================================
+void CwdelayAudioProcessor::parameterChanged(const String& parameterID, float newValue)
+{
+    
 }
 
 //==============================================================================

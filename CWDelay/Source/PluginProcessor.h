@@ -17,7 +17,8 @@
 //==============================================================================
 /**
 */
-class CwdelayAudioProcessor  : public AudioProcessor
+class CwdelayAudioProcessor  : public AudioProcessor,
+                               public AudioProcessorValueTreeState::Listener
 {
 public:
     //==============================================================================
@@ -58,6 +59,7 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
     
     //==============================================================================
+    void parameterChanged(const String& parameterID, float newValue) override;
 
 private:
     //==============================================================================
