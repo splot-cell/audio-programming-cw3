@@ -33,7 +33,6 @@ CwdelayAudioProcessor::CwdelayAudioProcessor()
                                       0.5f,                                     // default value
                                       nullptr,
                                       nullptr);
-    parameters.addParameterListener ("inputGain", this);
     
     parameters.createAndAddParameter ("outputGain",                             // ID
                                       "Output Gain",                            // name
@@ -50,6 +49,7 @@ CwdelayAudioProcessor::CwdelayAudioProcessor()
                                       0.5f,                                     // default value
                                       nullptr,
                                       nullptr);
+    parameters.addParameterListener ("delayTime", this);
     
     parameters.createAndAddParameter ("feedback",                               // ID
                                       "Feedback",                               // name
@@ -58,6 +58,7 @@ CwdelayAudioProcessor::CwdelayAudioProcessor()
                                       0.0f,                                     // default value
                                       nullptr,
                                       nullptr);
+    parameters.addParameterListener ("feedback", this);
     
     parameters.state = ValueTree (Identifier ("OllySAPCW3"));
 }
@@ -134,8 +135,8 @@ void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     previousInputGain = *parameters.getRawParameterValue("inputGain");
     previousOutputGain = *parameters.getRawParameterValue("outputGain");
     delay.prepareDelayLine (sampleRate, getTotalNumInputChannels());
-    delay.setDelaySize (*parameters.getRawParameterValue ("delayTime"));
-    delay.setFeedback (*parameters.getRawParameterValue ("feedback"));
+    //delay.setDelaySize (*parameters.getRawParameterValue ("delayTime"));
+    //delay.setFeedback (*parameters.getRawParameterValue ("feedback"));
 }
 
 void CwdelayAudioProcessor::releaseResources()
@@ -174,8 +175,8 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
     const int totalNumInputChannels  = getTotalNumInputChannels();
     const int totalNumOutputChannels = getTotalNumOutputChannels();
     
-    delay.setDelaySize (*parameters.getRawParameterValue ("delayTime"));
-    delay.setFeedback (*parameters.getRawParameterValue ("feedback"));
+    //delay.setDelaySize (*parameters.getRawParameterValue ("delayTime"));
+    //delay.setFeedback (*parameters.getRawParameterValue ("feedback"));
     
     /* Apply ramp to gain changes to avoid glitches from fast parameter changes. */
     {
@@ -227,7 +228,14 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
 //==============================================================================
 void CwdelayAudioProcessor::parameterChanged(const String& parameterID, float newValue)
 {
-    
+    if (parameterID == "delayTime")
+    {
+        delay.setDelaySize (newValue);
+    }
+    else if (parameterID == "feedback")
+    {
+        delay.setFeedback (newValue);
+    }
 }
 
 //==============================================================================

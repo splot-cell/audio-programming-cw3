@@ -32,8 +32,7 @@ protected:
 private:
     AudioBuffer<float> delayLine;
     int writePoint[g_maxChannels];
-    int readPoint[g_maxChannels];
     float feedback;
-    int delaySize;
+    float delaySize;
     float samplerate;
 };
