@@ -65,6 +65,11 @@ private:
     //==============================================================================
     AudioProcessorValueTreeState parameters;
     
+    LinearSmoothedValue<float> delaySize;
+    LinearSmoothedValue<float> wetLevel;
+    
+    float samplerate;
+    
     float previousInputGain;
     float previousOutputGain;
     

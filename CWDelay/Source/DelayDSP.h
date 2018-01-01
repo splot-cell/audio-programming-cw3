@@ -12,22 +12,16 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-const int g_maxChannels = 2;
-
 class VariableDelayLine
 {
 public:
-    void prepareDelayLine (int sr, int numChannels);
+    void prepareDelayLine (int delaySize, int numChannels);
     
-    void processAudio (AudioBuffer<float>& buffer, int channel);
+    void writeSample (float value, int channel);
     
-    void setDelaySize (float time);
+    float getSample (float delaySize, int channel);
     
-    void setFeedback (float fb);
-    
-    void setDryWet (float ratio);
-    
-    VariableDelayLine() : feedback (0.f) {dryWet.setValue (0.5);}
+    VariableDelayLine (int numChannels) : writePoint (numChannels, true) {}
     
     ~VariableDelayLine() {}
     
@@ -35,14 +29,6 @@ protected:
     
 private:
     AudioBuffer<float> delayLine;
-    int writePoint[g_maxChannels];
-    float feedback;
-    LinearSmoothedValue<float> delaySize;
-    float samplerate;
-    LinearSmoothedValue<float> dryWet; // dry = 0, wet = 1
-    
-    enum
-    {
-        parameterSmoothingTime = 200 // ms
-    };
+    HeapBlock<int, true> writePoint;
+    int bitMask;
 };

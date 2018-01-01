@@ -24,7 +24,8 @@ CwdelayAudioProcessor::CwdelayAudioProcessor()
                      #endif
                        ),
 #endif
-    parameters (*this, nullptr)
+    parameters (*this, nullptr),
+    delay(getTotalNumInputChannels())
 {
     parameters.createAndAddParameter ("inputGain",                              // ID
                                       "Input Gain",                             // name
@@ -45,7 +46,7 @@ CwdelayAudioProcessor::CwdelayAudioProcessor()
     parameters.createAndAddParameter ("delayTime",                              // ID
                                       "Delay Time",                             // name
                                       "s",                                      // suffix
-                                      NormalisableRange<float> (0.001f, 1.0f),  // set range
+                                      NormalisableRange<float> (0.0f, 1.0f),    // set range
                                       0.5f,                                     // default value
                                       nullptr,
                                       nullptr);
@@ -141,12 +142,20 @@ void CwdelayAudioProcessor::changeProgramName (int index, const String& newName)
 //==============================================================================
 void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    samplerate = (float) sampleRate;
+    
     previousInputGain = *parameters.getRawParameterValue("inputGain");
     previousOutputGain = *parameters.getRawParameterValue("outputGain");
     
     /* Initalise parameters before playback begins. */
-    delay.setDelaySize (*parameters.getRawParameterValue ("delayTime"));
-    delay.setFeedback (*parameters.getRawParameterValue ("feedback"));
+    delaySize.setValue (*parameters.getRawParameterValue ("delayTime") * sampleRate);
+    delaySize.reset (sampleRate, 0.2);
+    
+    wetLevel.setValue (* parameters.getRawParameterValue ("wetLevel"));
+    delaySize.reset (sampleRate, 0.2);
+    
+//    delay.setDelaySize (*parameters.getRawParameterValue ("delayTime"));
+//    delay.setFeedback (*parameters.getRawParameterValue ("feedback"));
     
     delay.prepareDelayLine (sampleRate, getTotalNumInputChannels());
 }
@@ -216,10 +225,26 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    
+    float out[totalNumInputChannels];
+    for ( int i = 0; i < totalNumInputChannels; ++i)
+        out[i] = 0;
+    
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
-        delay.processAudio (buffer, channel);
+        const float delayValue = delaySize.getNextValue();
+        
+        for (int channel = 0; channel < totalNumInputChannels; ++channel)
+        {
+            float in = buffer.getSample (channel, sample) + (out[channel] * *parameters.getRawParameterValue ("feedback"));
+            delay.writeSample (in, channel);
+            out[channel] = delay.getSample (delayValue, channel);
+            
+            /* Dry / wet logic */
+            buffer.addSample (channel, sample, out[channel]);
+        }
     }
+    
     
     /* Apply ramp to gain changes to avoid glitches from fast parameter changes. */
     {
@@ -242,15 +267,13 @@ void CwdelayAudioProcessor::parameterChanged(const String& parameterID, float ne
 {
     if (parameterID == "delayTime")
     {
-        delay.setDelaySize (newValue);
-    }
-    else if (parameterID == "feedback")
-    {
-        delay.setFeedback (newValue);
+        if (! delaySize.isSmoothing())
+            delaySize.setValue (newValue * samplerate);
     }
     else if (parameterID == "wetLevel")
     {
-        delay.setDryWet (newValue);
+        if (! wetLevel.isSmoothing())
+            wetLevel.setValue (newValue);
     }
 }
 
