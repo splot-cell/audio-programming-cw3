@@ -25,7 +25,10 @@ void VariableDelayLine::processAudio (AudioBuffer<float>& buffer, int channel)
                             interpDelta * (nextSample - delayLine.getSample (channel, readPointI));
         delayLine.setSample (channel, writePoint[channel], buffer.getSample (channel, i));
         delayLine.addSample (channel, writePoint[channel], outputSample * feedback);
-        buffer.addSample (channel, i, outputSample);
+        
+        float wetLevel = dryWet.getNextValue();
+        buffer.applyGain (channel, i, 1, 1. - wetLevel);
+        buffer.addSample (channel, i, outputSample * wetLevel);
         writePoint[channel] = (writePoint[channel] + 1) % maxDelay;
     }
 }
@@ -42,6 +45,7 @@ void VariableDelayLine::prepareDelayLine (int sr, int numChannels)
     
     setDelaySize (0.5); // Not sure if this is a bad thing to have?
     delaySize.reset (sr, 0.2);
+    dryWet.reset (sr, 0.2);
 }
 
 void VariableDelayLine::setDelaySize (float time)
@@ -53,4 +57,10 @@ void VariableDelayLine::setDelaySize (float time)
 void VariableDelayLine::setFeedback (float fb)
 {
     feedback = fb;
+}
+
+void VariableDelayLine::setDryWet (float ratio)
+{
+    if (! dryWet.isSmoothing())
+        dryWet.setValue (ratio);
 }

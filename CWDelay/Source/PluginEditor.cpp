@@ -74,6 +74,14 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     addAndMakeVisible (feedbackSlider);
     feedbackAttachment = new SliderAttachment (valueTreeState, "feedback", feedbackSlider);
     ++numberOfSliders;
+    
+    dryWetLabel.setText ("Dry Wet Mix", dontSendNotification);
+    addAndMakeVisible (dryWetLabel);
+    
+    dryWetSlider.setSliderStyle (juce::Slider::LinearBarVertical);
+    addAndMakeVisible (dryWetSlider);
+    dryWetAttachment = new SliderAttachment (valueTreeState, "wetLevel", dryWetSlider);
+    ++numberOfSliders;
     //[/Constructor_pre]
 
 
@@ -129,6 +137,9 @@ void CwdelayAudioProcessorEditor::resized()
         
         feedbackLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
         feedbackSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
+        
+        dryWetLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
+        dryWetSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
         
         outputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
         outputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));

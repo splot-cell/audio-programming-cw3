@@ -25,7 +25,11 @@ public:
     
     void setFeedback (float fb);
     
-    VariableDelayLine() : feedback (0.f) {}
+    void setDryWet (float ratio);
+    
+    VariableDelayLine() : feedback (0.f) {dryWet.setValue (0.5);}
+    
+    ~VariableDelayLine() {}
     
 protected:
     
@@ -35,5 +39,5 @@ private:
     float feedback;
     LinearSmoothedValue<float> delaySize;
     float samplerate;
-    float wetRatio;
+    LinearSmoothedValue<float> dryWet; // dry = 0, wet = 1
 };

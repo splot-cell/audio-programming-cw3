@@ -60,6 +60,15 @@ CwdelayAudioProcessor::CwdelayAudioProcessor()
                                       nullptr);
     parameters.addParameterListener ("feedback", this);
     
+    parameters.createAndAddParameter ("wetLevel",                               // ID
+                                      "Dry Wet Mix",                            // name
+                                      String(),                                 // suffix
+                                      NormalisableRange<float> (0.0f, 1.0f),    // set range
+                                      0.5f,                                     // default value
+                                      nullptr,
+                                      nullptr);
+    parameters.addParameterListener ("wetLevel", this);
+    
     parameters.state = ValueTree (Identifier ("OllySAPCW3"));
 }
 
@@ -235,6 +244,10 @@ void CwdelayAudioProcessor::parameterChanged(const String& parameterID, float ne
     else if (parameterID == "feedback")
     {
         delay.setFeedback (newValue);
+    }
+    else if (parameterID == "wetLevel")
+    {
+        delay.setDryWet (newValue);
     }
 }
 

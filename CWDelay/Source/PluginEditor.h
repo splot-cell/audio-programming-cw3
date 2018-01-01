@@ -73,6 +73,10 @@ private:
     Label feedbackLabel;
     Slider feedbackSlider;
     ScopedPointer<SliderAttachment> feedbackAttachment;
+    
+    Label dryWetLabel;
+    Slider dryWetSlider;
+    ScopedPointer<SliderAttachment> dryWetAttachment;
     //[/UserVariables]
 
     //==============================================================================
