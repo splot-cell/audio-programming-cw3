@@ -16,7 +16,7 @@ void VariableDelayLine::processAudio (AudioBuffer<float>& buffer, int channel)
     
     for (int i = 0; i < buffer.getNumSamples(); ++i)
     {
-        float readPointF = writePoint[channel] - delaySize;
+        float readPointF = writePoint[channel] - delaySize.getNextValue();
         readPointF = (readPointF >= 0 ? (readPointF < maxDelay ? readPointF : readPointF - maxDelay) : readPointF + maxDelay);
         int readPointI = (int) readPointF;
         float interpDelta = readPointF - readPointI;
@@ -40,12 +40,14 @@ void VariableDelayLine::prepareDelayLine (int sr, int numChannels)
     for (int i = 0; i < numChannels; ++i)
         writePoint[i] = 0;
     
-    setDelaySize (0.5);
+    setDelaySize (0.5); // Not sure if this is a bad thing to have?
+    delaySize.reset (sr, 0.2);
 }
 
 void VariableDelayLine::setDelaySize (float time)
 {
-    delaySize = time * samplerate;
+    if (! delaySize.isSmoothing())
+        delaySize.setValue (time * samplerate);
 }
 
 void VariableDelayLine::setFeedback (float fb)

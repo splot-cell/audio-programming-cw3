@@ -33,6 +33,7 @@ private:
     AudioBuffer<float> delayLine;
     int writePoint[g_maxChannels];
     float feedback;
-    float delaySize;
+    LinearSmoothedValue<float> delaySize;
     float samplerate;
+    float wetRatio;
 };
