@@ -143,9 +143,12 @@ void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
 {
     previousInputGain = *parameters.getRawParameterValue("inputGain");
     previousOutputGain = *parameters.getRawParameterValue("outputGain");
+    
+    /* Initalise parameters before playback begins. */
+    delay.setDelaySize (*parameters.getRawParameterValue ("delayTime"));
+    delay.setFeedback (*parameters.getRawParameterValue ("feedback"));
+    
     delay.prepareDelayLine (sampleRate, getTotalNumInputChannels());
-    //delay.setDelaySize (*parameters.getRawParameterValue ("delayTime"));
-    //delay.setFeedback (*parameters.getRawParameterValue ("feedback"));
 }
 
 void CwdelayAudioProcessor::releaseResources()

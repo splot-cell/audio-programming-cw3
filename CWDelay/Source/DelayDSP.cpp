@@ -43,9 +43,8 @@ void VariableDelayLine::prepareDelayLine (int sr, int numChannels)
     for (int i = 0; i < numChannels; ++i)
         writePoint[i] = 0;
     
-    setDelaySize (0.5); // Not sure if this is a bad thing to have?
-    delaySize.reset (sr, 0.2);
-    dryWet.reset (sr, 0.2);
+    delaySize.reset (sr, parameterSmoothingTime * 0.001);
+    dryWet.reset (sr, parameterSmoothingTime * 0.001);
 }
 
 void VariableDelayLine::setDelaySize (float time)

@@ -40,4 +40,9 @@ private:
     LinearSmoothedValue<float> delaySize;
     float samplerate;
     LinearSmoothedValue<float> dryWet; // dry = 0, wet = 1
+    
+    enum
+    {
+        parameterSmoothingTime = 200 // ms
+    };
 };
