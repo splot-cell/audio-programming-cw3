@@ -65,13 +65,14 @@ private:
     //==============================================================================
     AudioProcessorValueTreeState parameters;
     
-    LinearSmoothedValue<float> delaySize;
+    LinearSmoothedValue<float> delaySize; // Smooth parameter changes.
     LinearSmoothedValue<float> wetLevel;
+    LinearSmoothedValue<float> feedback;
     
-    float samplerate;
+    float samplerate; // Required for real-time calculation of delay size in samples.
     
-    float previousInputGain;
-    float previousOutputGain;
+    float previousInputGain; // For smoothing gain changes over course of one buffer.
+    float previousOutputGain; // As above.
     
     VariableDelayLine delay;
     

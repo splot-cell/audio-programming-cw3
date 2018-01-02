@@ -13,9 +13,9 @@
 
 
 //==============================================================================
-CwdelayAudioProcessor::CwdelayAudioProcessor()
+CwdelayAudioProcessor::CwdelayAudioProcessor() :
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
+       AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
                       #if ! JucePlugin_IsSynth
                        .withInput  ("Input",  AudioChannelSet::stereo(), true)
@@ -56,7 +56,7 @@ CwdelayAudioProcessor::CwdelayAudioProcessor()
                                       "Feedback",                               // name
                                       String(),                                 // suffix
                                       NormalisableRange<float> (0.0f, 1.0f),    // set range
-                                      0.0f,                                     // default value
+                                      0.5f,                                     // default value
                                       nullptr,
                                       nullptr);
     parameters.addParameterListener ("feedback", this);
@@ -151,11 +151,11 @@ void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     delaySize.setValue (*parameters.getRawParameterValue ("delayTime") * sampleRate);
     delaySize.reset (sampleRate, 0.2);
     
-    wetLevel.setValue (* parameters.getRawParameterValue ("wetLevel"));
-    delaySize.reset (sampleRate, 0.2);
+    wetLevel.setValue (*parameters.getRawParameterValue ("wetLevel"));
+    wetLevel.reset (sampleRate, 0.2);
     
-//    delay.setDelaySize (*parameters.getRawParameterValue ("delayTime"));
-//    delay.setFeedback (*parameters.getRawParameterValue ("feedback"));
+    feedback.setValue (*parameters.getRawParameterValue("feedback"));
+    feedback.reset (sampleRate, 0.2);
     
     delay.prepareDelayLine (sampleRate, getTotalNumInputChannels());
 }
@@ -233,15 +233,19 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
         const float delayValue = delaySize.getNextValue();
+        const float wetLevelValue = wetLevel.getNextValue();
+        const float feedbackValue = feedback.getNextValue();
         
         for (int channel = 0; channel < totalNumInputChannels; ++channel)
         {
-            float in = buffer.getSample (channel, sample) + (out[channel] * *parameters.getRawParameterValue ("feedback"));
+            float in = buffer.getSample (channel, sample) + (out[channel] * feedbackValue);
             delay.writeSample (in, channel);
             out[channel] = delay.getSample (delayValue, channel);
             
             /* Dry / wet logic */
-            buffer.addSample (channel, sample, out[channel]);
+            buffer.applyGain (channel, sample, 1, 1. - wetLevelValue);
+            
+            buffer.addSample (channel, sample, wetLevelValue * out[channel]);
         }
     }
     
@@ -266,15 +270,11 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
 void CwdelayAudioProcessor::parameterChanged(const String& parameterID, float newValue)
 {
     if (parameterID == "delayTime")
-    {
-        if (! delaySize.isSmoothing())
-            delaySize.setValue (newValue * samplerate);
-    }
+        delaySize.setValue (newValue * samplerate);
     else if (parameterID == "wetLevel")
-    {
-        if (! wetLevel.isSmoothing())
-            wetLevel.setValue (newValue);
-    }
+        wetLevel.setValue (newValue);
+    else if (parameterID == "feedback")
+        feedback.setValue (newValue);
 }
 
 //==============================================================================
