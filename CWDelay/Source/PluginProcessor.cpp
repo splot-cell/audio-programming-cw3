@@ -25,7 +25,6 @@ CwdelayAudioProcessor::CwdelayAudioProcessor() :
                        ),
 #endif
     parameters (*this, nullptr),
-    delay (getTotalNumInputChannels()),
     filter (126)
 {
     parameters.createAndAddParameter ("inputGain",                              // ID

@@ -21,7 +21,7 @@ public:
     
     float getSample (float delaySize, int channel);
     
-    VariableDelayLine (int numChannels) : writePoint (numChannels, true) {}
+    VariableDelayLine () {}
     
     ~VariableDelayLine() {}
     

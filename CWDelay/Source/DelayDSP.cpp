@@ -56,6 +56,8 @@ void VariableDelayLine::prepareDelayLine (int delaySize, int numChannels)
     delayLine.setSize (numChannels, nextPowerOfTwo (delaySize));
     delayLine.clear();
     
+    writePoint.calloc (numChannels);
+    
     bitMask = nextPowerOfTwo (delaySize) - 1;
     
     for (int i = 0; i < numChannels; ++i)
