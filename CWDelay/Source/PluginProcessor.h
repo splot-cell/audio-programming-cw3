@@ -12,6 +12,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "DelayDSP.h"
+#include "FilterDSP.h"
 
 
 //==============================================================================
@@ -75,6 +76,7 @@ private:
     float previousOutputGain; // As above.
     
     VariableDelayLine delay;
+    LPFilter filter;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CwdelayAudioProcessor)
 };

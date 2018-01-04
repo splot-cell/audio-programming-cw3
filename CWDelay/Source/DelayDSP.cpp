@@ -53,7 +53,7 @@ void VariableDelayLine::writeSample (float value, int channel)
 
 void VariableDelayLine::prepareDelayLine (int delaySize, int numChannels)
 {
-    delayLine.setSize (numChannels, nextPowerOfTwo (delaySize), true, true);
+    delayLine.setSize (numChannels, nextPowerOfTwo (delaySize));
     delayLine.clear();
     
     bitMask = nextPowerOfTwo (delaySize) - 1;

@@ -25,7 +25,8 @@ CwdelayAudioProcessor::CwdelayAudioProcessor() :
                        ),
 #endif
     parameters (*this, nullptr),
-    delay(getTotalNumInputChannels())
+    delay (getTotalNumInputChannels()),
+    filter (126)
 {
     parameters.createAndAddParameter ("inputGain",                              // ID
                                       "Input Gain",                             // name
@@ -56,7 +57,7 @@ CwdelayAudioProcessor::CwdelayAudioProcessor() :
                                       "Feedback",                               // name
                                       String(),                                 // suffix
                                       NormalisableRange<float> (0.0f, 1.0f),    // set range
-                                      0.5f,                                     // default value
+                                      0.7f,                                     // default value
                                       nullptr,
                                       nullptr);
     parameters.addParameterListener ("feedback", this);
@@ -158,6 +159,8 @@ void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     feedback.reset (sampleRate, 0.2);
     
     delay.prepareDelayLine (sampleRate, getTotalNumInputChannels());
+    
+    filter.prepareForAudio (2000, sampleRate, getTotalNumInputChannels());
 }
 
 void CwdelayAudioProcessor::releaseResources()
@@ -240,7 +243,7 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
         {
             float in = buffer.getSample (channel, sample) + (out[channel] * feedbackValue);
             delay.writeSample (in, channel);
-            out[channel] = delay.getSample (delayValue, channel);
+            out[channel] = filter.processSample (delay.getSample (delayValue, channel), channel);
             
             /* Dry / wet logic */
             buffer.applyGain (channel, sample, 1, 1. - wetLevelValue);
