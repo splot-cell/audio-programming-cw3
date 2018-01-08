@@ -65,15 +65,15 @@ private:
     Label outputGainLabel;
     Slider outputGainSlider;
     ScopedPointer<SliderAttachment> outputGainAttachment;
-    
+
     Label delayTimeLabel;
     Slider delayTimeSlider;
     ScopedPointer<SliderAttachment> delayTimeAttachment;
-    
+
     Label feedbackLabel;
     Slider feedbackSlider;
     ScopedPointer<SliderAttachment> feedbackAttachment;
-    
+
     Label dryWetLabel;
     Slider dryWetSlider;
     ScopedPointer<SliderAttachment> dryWetAttachment;

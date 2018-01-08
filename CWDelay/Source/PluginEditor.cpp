@@ -42,42 +42,42 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
 {
     //[Constructor_pre] You can add your own custom stuff here..
     numberOfSliders = 0;
-    
+
     inputGainLabel.setText ("Input Gain", dontSendNotification);
     addAndMakeVisible (inputGainLabel);
-    
+
     inputGainSlider.setSliderStyle (juce::Slider::LinearBarVertical);
     addAndMakeVisible (inputGainSlider);
     inputGainAttachment = new SliderAttachment (valueTreeState, "inputGain", inputGainSlider);
     ++numberOfSliders;
-    
+
     outputGainLabel.setText ("Output Gain", dontSendNotification);
     addAndMakeVisible (outputGainLabel);
-    
+
     outputGainSlider.setSliderStyle (juce::Slider::LinearBarVertical);
     addAndMakeVisible (outputGainSlider);
     outputGainAttachment = new SliderAttachment (valueTreeState, "outputGain", outputGainSlider);
     ++numberOfSliders;
-    
+
     delayTimeLabel.setText ("Delay Time", dontSendNotification);
     addAndMakeVisible (delayTimeLabel);
-    
+
     delayTimeSlider.setSliderStyle (juce::Slider::LinearBarVertical);
     addAndMakeVisible (delayTimeSlider);
     delayTimeAttachment = new SliderAttachment (valueTreeState, "delayTime", delayTimeSlider);
     ++numberOfSliders;
-    
+
     feedbackLabel.setText ("Feedback", dontSendNotification);
     addAndMakeVisible (feedbackLabel);
-    
+
     feedbackSlider.setSliderStyle (juce::Slider::LinearBarVertical);
     addAndMakeVisible (feedbackSlider);
     feedbackAttachment = new SliderAttachment (valueTreeState, "feedback", feedbackSlider);
     ++numberOfSliders;
-    
+
     dryWetLabel.setText ("Dry Wet Mix", dontSendNotification);
     addAndMakeVisible (dryWetLabel);
-    
+
     dryWetSlider.setSliderStyle (juce::Slider::LinearBarVertical);
     addAndMakeVisible (dryWetSlider);
     dryWetAttachment = new SliderAttachment (valueTreeState, "wetLevel", dryWetSlider);
@@ -126,21 +126,21 @@ void CwdelayAudioProcessorEditor::resized()
         Rectangle<int> sliderArea = r.reduced (r.getWidth() * 0.01 * parameterPercentagePadding, r.getHeight() * 0.01 * parameterPercentagePadding);
         Rectangle<int> labelArea = sliderArea.removeFromBottom (parameterLabelHeight);
         sliderArea.removeFromBottom (parameterLabelSpacing);
-        
+
         const float horizontalSpacing = sliderArea.getWidth() / numberOfSliders;
-        
+
         inputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
         inputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
-        
+
         delayTimeLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
         delayTimeSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
-        
+
         feedbackLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
         feedbackSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
-        
+
         dryWetLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
         dryWetSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
-        
+
         outputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
         outputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
     }

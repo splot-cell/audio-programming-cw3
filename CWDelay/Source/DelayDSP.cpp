@@ -10,29 +10,6 @@
 
 #include "DelayDSP.h"
 
-//void VariableDelayLine::processAudio (AudioBuffer<float>& buffer, int channel)
-//{
-//    int maxDelay = delayLine.getNumSamples();
-//    
-//    for (int i = 0; i < buffer.getNumSamples(); ++i)
-//    {
-//        float readPointF = writePoint[channel] - delaySize.getNextValue();
-//        readPointF = (readPointF >= 0 ? (readPointF < maxDelay ? readPointF : readPointF - maxDelay) : readPointF + maxDelay);
-//        int readPointI = (int) readPointF;
-//        float interpDelta = readPointF - readPointI;
-//        float nextSample = (readPointI < maxDelay - 1 ? delayLine.getSample (channel, readPointI + 1) : delayLine.getSample (channel, 0));
-//        float outputSample = delayLine.getSample (channel, readPointI) +
-//                            interpDelta * (nextSample - delayLine.getSample (channel, readPointI));
-//        delayLine.setSample (channel, writePoint[channel], buffer.getSample (channel, i));
-//        delayLine.addSample (channel, writePoint[channel], outputSample * feedback);
-//        
-//        float wetLevel = dryWet.getNextValue();
-//        buffer.applyGain (channel, i, 1, 1. - wetLevel);
-//        buffer.addSample (channel, i, outputSample * wetLevel);
-//        writePoint[channel] = (writePoint[channel] + 1) % maxDelay;
-//    }
-//}
-
 float VariableDelayLine::getSample (float delaySize, int channel)
 {
     const int delaySizeI = (int) delaySize;
