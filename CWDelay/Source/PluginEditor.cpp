@@ -47,6 +47,7 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     addAndMakeVisible (inputGainLabel);
 
     inputGainSlider.setSliderStyle (juce::Slider::LinearBarVertical);
+    inputGainSlider.setTextValueSuffix("dB");
     addAndMakeVisible (inputGainSlider);
     inputGainAttachment = new SliderAttachment (valueTreeState, "inputGain", inputGainSlider);
     ++numberOfSliders;
@@ -55,6 +56,7 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     addAndMakeVisible (outputGainLabel);
 
     outputGainSlider.setSliderStyle (juce::Slider::LinearBarVertical);
+    outputGainSlider.setTextValueSuffix("dB");
     addAndMakeVisible (outputGainSlider);
     outputGainAttachment = new SliderAttachment (valueTreeState, "outputGain", outputGainSlider);
     ++numberOfSliders;
@@ -63,6 +65,7 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     addAndMakeVisible (delayTimeLabel);
 
     delayTimeSlider.setSliderStyle (juce::Slider::LinearBarVertical);
+    delayTimeSlider.setTextValueSuffix ("s");
     addAndMakeVisible (delayTimeSlider);
     delayTimeAttachment = new SliderAttachment (valueTreeState, "delayTime", delayTimeSlider);
     ++numberOfSliders;
@@ -79,6 +82,7 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     addAndMakeVisible (dryWetLabel);
 
     dryWetSlider.setSliderStyle (juce::Slider::LinearBarVertical);
+    dryWetSlider.setTextValueSuffix ("%");
     addAndMakeVisible (dryWetSlider);
     dryWetAttachment = new SliderAttachment (valueTreeState, "wetLevel", dryWetSlider);
     ++numberOfSliders;
@@ -86,6 +90,8 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
 
 
     //[UserPreSize]
+    setResizable (true, true);
+    setResizeLimits (300, 200, 1200, 800);
     //[/UserPreSize]
 
     setSize (600, 400);

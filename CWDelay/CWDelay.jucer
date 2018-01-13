@@ -13,13 +13,19 @@
               pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="5.2.0">
   <MAINGROUP id="wNR8V0" name="CWDelay">
     <GROUP id="{49A20CC3-170E-F126-B0FE-1A249EF2E4AF}" name="Source">
+      <GROUP id="{F57AD7AA-637F-BF4D-6181-F9B24774E4C5}" name="DSP">
+        <FILE id="aNckcU" name="FilterDSP.cpp" compile="1" resource="0" file="Source/FilterDSP.cpp"/>
+        <FILE id="ro5fRy" name="FilterDSP.h" compile="0" resource="0" file="Source/FilterDSP.h"/>
+        <FILE id="TBwqqc" name="DelayDSP.cpp" compile="1" resource="0" file="Source/DelayDSP.cpp"/>
+        <FILE id="Tgbenv" name="DelayDSP.h" compile="0" resource="0" file="Source/DelayDSP.h"/>
+      </GROUP>
+      <GROUP id="{E36ED2C9-2699-99BC-D54F-BAB0DD2B06F9}" name="CustomSliders">
+        <FILE id="Npxp0M" name="GainSlider.cpp" compile="1" resource="0" file="Source/GainSlider.cpp"/>
+        <FILE id="K9A9rG" name="GainSlider.h" compile="0" resource="0" file="Source/GainSlider.h"/>
+      </GROUP>
       <FILE id="YH8bc4" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="selIeN" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
-      <FILE id="aNckcU" name="FilterDSP.cpp" compile="1" resource="0" file="Source/FilterDSP.cpp"/>
-      <FILE id="ro5fRy" name="FilterDSP.h" compile="0" resource="0" file="Source/FilterDSP.h"/>
-      <FILE id="TBwqqc" name="DelayDSP.cpp" compile="1" resource="0" file="Source/DelayDSP.cpp"/>
-      <FILE id="Tgbenv" name="DelayDSP.h" compile="0" resource="0" file="Source/DelayDSP.h"/>
       <FILE id="Lbywjr" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="lYxuzx" name="PluginProcessor.h" compile="0" resource="0"

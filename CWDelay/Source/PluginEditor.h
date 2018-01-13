@@ -21,6 +21,7 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "GainSlider.h"
 //[/Headers]
 
 
@@ -59,11 +60,11 @@ private:
     int numberOfSliders; // For easy distribution of controls within the plugin window.
 
     Label inputGainLabel;
-    Slider inputGainSlider;
+    GainSlider inputGainSlider;
     ScopedPointer<SliderAttachment> inputGainAttachment;
 
     Label outputGainLabel;
-    Slider outputGainSlider;
+    GainSlider outputGainSlider;
     ScopedPointer<SliderAttachment> outputGainAttachment;
 
     Label delayTimeLabel;
