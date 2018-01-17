@@ -58,6 +58,7 @@ private:
 
     AudioProcessorValueTreeState& valueTreeState;
     int numberOfSliders; // For easy distribution of controls within the plugin window.
+    int numberOfRows;
 
     Label inputGainLabel;
     GainSlider inputGainSlider;

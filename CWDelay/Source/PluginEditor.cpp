@@ -27,13 +27,11 @@
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 enum
 {
-    parameterSliderMinHeight = 200,
-    parameterSliderWidth = 40,
-    parameterLabelSpacing = 8,
-    parameterLabelWidth = 80,
-    parameterLabelHeight = 24,
     parameterPercentagePadding = 10,
-    parameterButtonHeight = 40
+    parameterSliderPadding = 2,
+    parameterLabelSpacing = 8,
+    parameterLabelHeight = 24,
+    parameterButtonHeight = 24
 };
 //[/MiscUserDefs]
 
@@ -43,6 +41,7 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
 {
     //[Constructor_pre] You can add your own custom stuff here..
     numberOfSliders = 0;
+    numberOfRows = 1; // Initialise to one in order to centralise coordinates.
 
     inputGainLabel.setText ("Input Gain", dontSendNotification);
     addAndMakeVisible (inputGainLabel);
@@ -92,6 +91,7 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     addAndMakeVisible (tapeModeButton);
     tapeModeAttachment = new ButtonAttachment (valueTreeState, "tapeMode", tapeModeButton);
     ++numberOfSliders;
+    ++numberOfRows;
     //[/Constructor_pre]
 
 
@@ -138,23 +138,24 @@ void CwdelayAudioProcessorEditor::resized()
         sliderArea.removeFromBottom (parameterLabelSpacing);
 
         const float horizontalSpacing = sliderArea.getWidth() / numberOfSliders;
+        const float verticalSpacing = sliderArea.getHeight() / numberOfRows;
 
         inputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
-        inputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
+        inputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing).reduced (parameterSliderPadding));
 
         delayTimeLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
-        delayTimeSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
+        delayTimeSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing).reduced (parameterSliderPadding));
 
         feedbackLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
-        feedbackSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
+        feedbackSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing).reduced (parameterSliderPadding));
 
         dryWetLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
-        dryWetSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
+        dryWetSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing).reduced (parameterSliderPadding));
 
         outputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
-        outputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
+        outputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing).reduced (parameterSliderPadding));
         
-        tapeModeButton.setBounds (sliderArea.removeFromTop (parameterButtonHeight));
+        tapeModeButton.setBounds (sliderArea.withTrimmedTop (verticalSpacing).removeFromTop (parameterButtonHeight));
     }
     //[/UserPreResize]
 
