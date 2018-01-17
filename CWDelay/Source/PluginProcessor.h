@@ -22,6 +22,7 @@ class CwdelayAudioProcessor  : public AudioProcessor,
                                public AudioProcessorValueTreeState::Listener
 {
 public:
+    
     //==============================================================================
     CwdelayAudioProcessor();
     ~CwdelayAudioProcessor();
@@ -61,9 +62,25 @@ public:
     
     //==============================================================================
     void parameterChanged(const String& parameterID, float newValue) override;
-
+    
 private:
     //==============================================================================
+    /* LFO functions for varying delay line. */
+    static float LFOFunc(float angle);
+    static float LFO1Func(float angle);
+    //==============================================================================
+    /* LFO parameters. */
+    constexpr static const float LFOdepth = 0.001; // in mSec
+    constexpr static const float LFO1depth = 0.01; // in mSec
+    
+    constexpr static const float maxLFOOffset = LFOdepth + LFO1depth; // LFOs vary delay size, this is the max positive offset in mSec.
+    
+    const int LFOResolution = 50;
+    //==============================================================================
+    /* Static functions for parameter text to float and float to text. */
+    static String tapeFloatToText (float value);
+    static float tapeTextToFloat (const String& text);
+    
     AudioProcessorValueTreeState parameters;
     
     LinearSmoothedValue<float> delaySize; // Smooth parameter changes.
@@ -79,8 +96,7 @@ private:
     LPFilter filter;
     
     dsp::Oscillator<float> LFO;
-    
-//    static float LFOFunc(float angle);
+    dsp::Oscillator<float> LFO1;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CwdelayAudioProcessor)
 };

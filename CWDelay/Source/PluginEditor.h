@@ -78,6 +78,9 @@ private:
     Label dryWetLabel;
     Slider dryWetSlider;
     ScopedPointer<SliderAttachment> dryWetAttachment;
+    
+    ToggleButton tapeModeButton;
+    ScopedPointer<ButtonAttachment> tapeModeAttachment;
     //[/UserVariables]
 
     //==============================================================================

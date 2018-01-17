@@ -32,7 +32,8 @@ enum
     parameterLabelSpacing = 8,
     parameterLabelWidth = 80,
     parameterLabelHeight = 24,
-    parameterPercentagePadding = 10
+    parameterPercentagePadding = 10,
+    parameterButtonHeight = 40
 };
 //[/MiscUserDefs]
 
@@ -86,15 +87,18 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     addAndMakeVisible (dryWetSlider);
     dryWetAttachment = new SliderAttachment (valueTreeState, "wetLevel", dryWetSlider);
     ++numberOfSliders;
+    
+    tapeModeButton.setButtonText ("Tape Mode");
+    addAndMakeVisible (tapeModeButton);
+    tapeModeAttachment = new ButtonAttachment (valueTreeState, "tapeMode", tapeModeButton);
+    ++numberOfSliders;
     //[/Constructor_pre]
 
 
     //[UserPreSize]
-    setResizable (true, true);
-    setResizeLimits (300, 200, 1200, 800);
     //[/UserPreSize]
 
-    setSize (600, 400);
+    setSize (800, 400);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -149,6 +153,8 @@ void CwdelayAudioProcessorEditor::resized()
 
         outputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
         outputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing));
+        
+        tapeModeButton.setBounds (sliderArea.removeFromTop (parameterButtonHeight));
     }
     //[/UserPreResize]
 

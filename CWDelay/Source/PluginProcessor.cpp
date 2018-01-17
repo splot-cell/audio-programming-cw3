@@ -13,10 +13,6 @@
 
 //==============================================================================
 
-float LFOFunc(float angle)
-{
-    return 0.002 + (0.002 * sinf (angle));
-}
 
 //==============================================================================
 CwdelayAudioProcessor::CwdelayAudioProcessor() :
@@ -32,7 +28,8 @@ CwdelayAudioProcessor::CwdelayAudioProcessor() :
 #endif
     parameters (*this, nullptr),
     filter (126),
-    LFO (&LFOFunc, 128)
+    LFO (LFOFunc, LFOResolution),
+    LFO1 (LFO1Func, LFOResolution)
 {
     parameters.createAndAddParameter ("inputGain",                              // ID
                                       "Input Gain",                             // name
@@ -77,8 +74,17 @@ CwdelayAudioProcessor::CwdelayAudioProcessor() :
                                       nullptr);
     parameters.addParameterListener ("wetLevel", this);
     
+    parameters.createAndAddParameter ("tapeMode",
+                                      "Tape Mode",
+                                      String(),
+                                      NormalisableRange<float> (0.f, 1.f, 1.f),
+                                      0.f,
+                                      tapeFloatToText,
+                                      tapeTextToFloat);
+    
     parameters.state = ValueTree (Identifier ("OllySAPCW3"));
     LFO.setFrequency (7);
+    LFO1.setFrequency (0.46);
 }
 
 CwdelayAudioProcessor::~CwdelayAudioProcessor()
@@ -155,6 +161,7 @@ void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     
     dsp::ProcessSpec spec = {sampleRate, 1, 1};
     LFO.prepare (spec);
+    LFO1.prepare (spec);
     
     /* Initalise parameters before playback begins. */
     previousInputGain = Decibels::decibelsToGain (*parameters.getRawParameterValue ("inputGain"), -90.f);
@@ -170,7 +177,10 @@ void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     feedback.setValue (*parameters.getRawParameterValue ("feedback"));
     feedback.reset (sampleRate, 0.2);
     
-    delay.prepareDelayLine (sampleRate, getTotalNumInputChannels());
+    /* Prepare delayline for 1 sec plus the max LFO offset worth of samples.
+     * As delaySize must be integer, add 1 to total to avoid errors through truncation in
+     * the case where sampleRate * (1 + maxLFOOffset) is a float. */
+    delay.prepareDelayLine (1 + sampleRate * (1 + maxLFOOffset), getTotalNumInputChannels());
     
     filter.prepareForAudio (2000, sampleRate, getTotalNumInputChannels());
 }
@@ -232,16 +242,25 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
     
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
-        const float LFOvalue = LFO.processSample (1.f) * samplerate;
-        
-        const float delayValue = delaySize.getNextValue() + LFOvalue;
+        /* Get parameter values here: per sample, not per channel.
+         * This avoids conflicting parameter values across the channels. */
         const float wetLevelValue = wetLevel.getNextValue();
         const float feedbackValue = feedback.getNextValue();
+        
+        /* If "tapeMode" parameter is below 0.5, set LFOvalue to nothing. Otherwise, get next
+         * values from the LFOs. */
+        const float LFOvalue = *parameters.getRawParameterValue ("tapeMode") < 0.5 ? 0.f :
+            (LFO.processSample (1.f) + LFO1.processSample (1.f)) * samplerate;
+        
+        /* Delay time is calculated from delay parameter plus the LFOvalue. */
+        const float delayValue = delaySize.getNextValue() + LFOvalue;
         
         for (int channel = 0; channel < totalNumInputChannels; ++channel)
         {
             float in = buffer.getSample (channel, sample) + (out[channel] * feedbackValue);
             delay.writeSample (in, channel);
+            
+            /* Get the next sample from the delay. */
             out[channel] = filter.processSample (delay.getSample (delayValue, channel), channel);
             
             /* Dry / wet logic */
@@ -306,6 +325,39 @@ void CwdelayAudioProcessor::setStateInformation (const void* data, int sizeInByt
     if (xmlState != nullptr)
         if (xmlState->hasTagName (parameters.state.getType()))
             parameters.state = ValueTree::fromXml (*xmlState);
+}
+
+/* LFO functions.
+ * Separate function are used for each LFO for two reasons:
+ *  1) the depth may be set independantly for each oscillator
+ *      * A depth parameter cannot be used as the functions must conform to the format given in the
+ *        dsp::Oscilllator class.
+ * and
+ *  2) the depth is implemented directly.
+ *      * This avoids scaling the LFO output during audio processing, which would result
+ *        in many additional multiplications, thus reducing efficiency.
+ */
+float CwdelayAudioProcessor::LFOFunc(float angle)
+{
+    return LFOdepth + (LFOdepth * sinf (angle));
+}
+
+float CwdelayAudioProcessor::LFO1Func(float angle)
+{
+    return LFO1depth + (LFO1depth * sinf (angle));
+}
+
+
+String CwdelayAudioProcessor::tapeFloatToText (float value)
+{
+    return value < 0.5 ? "Off" : "On";
+}
+
+float CwdelayAudioProcessor::tapeTextToFloat (const String& text)
+{
+    if (text == "Off") return 0.f;
+    if (text == "On")  return 1.f;
+    return 0.f;
 }
 
 //==============================================================================
