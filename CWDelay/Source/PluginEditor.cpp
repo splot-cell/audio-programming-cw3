@@ -31,7 +31,7 @@ enum
     parameterSliderPadding = 2,
     parameterLabelSpacing = 8,
     parameterLabelHeight = 24,
-    parameterButtonHeight = 24
+    parameterButtonHeight = 50
 };
 //[/MiscUserDefs]
 
@@ -92,6 +92,11 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     tapeModeAttachment = new ButtonAttachment (valueTreeState, "tapeMode", tapeModeButton);
     ++numberOfSliders;
     ++numberOfRows;
+    
+    crossModeButton.setButtonText ("Cross-over Mode\n(stereo only)");
+    addAndMakeVisible (crossModeButton);
+    crossModeAttachment = new ButtonAttachment (valueTreeState, "crossMode", crossModeButton);
+    ++numberOfRows;
     //[/Constructor_pre]
 
 
@@ -133,13 +138,15 @@ void CwdelayAudioProcessorEditor::resized()
     //[UserPreResize] Add your own custom resize code here..
     Rectangle<int> r = getLocalBounds();
     {
-        Rectangle<int> sliderArea = r.reduced (r.getWidth() * 0.01 * parameterPercentagePadding, r.getHeight() * 0.01 * parameterPercentagePadding);
+        Rectangle<int> sliderArea = r.reduced
+            (r.getWidth() * 0.01 * parameterPercentagePadding, r.getHeight() * 0.01 * parameterPercentagePadding);
+        
         Rectangle<int> labelArea = sliderArea.removeFromBottom (parameterLabelHeight);
-        sliderArea.removeFromBottom (parameterLabelSpacing);
-
+        sliderArea.removeFromBottom (parameterLabelSpacing); // Add paddding between sliders and labels
+        
         const float horizontalSpacing = sliderArea.getWidth() / numberOfSliders;
         const float verticalSpacing = sliderArea.getHeight() / numberOfRows;
-
+        
         inputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
         inputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing).reduced (parameterSliderPadding));
 
@@ -155,7 +162,11 @@ void CwdelayAudioProcessorEditor::resized()
         outputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
         outputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing).reduced (parameterSliderPadding));
         
-        tapeModeButton.setBounds (sliderArea.withTrimmedTop (verticalSpacing).removeFromTop (parameterButtonHeight));
+        const float remainingWidth = r.getRight() - sliderArea.getX();
+        sliderArea.removeFromTop (verticalSpacing);
+        tapeModeButton.setBounds (sliderArea.getX(), sliderArea.getY(), remainingWidth, parameterButtonHeight);
+        sliderArea.removeFromTop (verticalSpacing);
+        crossModeButton.setBounds (sliderArea.getX(), sliderArea.getY(), remainingWidth, parameterButtonHeight);
     }
     //[/UserPreResize]
 

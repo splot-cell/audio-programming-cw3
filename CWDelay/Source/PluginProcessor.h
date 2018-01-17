@@ -78,8 +78,8 @@ private:
     const int LFOResolution = 50;
     //==============================================================================
     /* Static functions for parameter text to float and float to text. */
-    static String tapeFloatToText (float value);
-    static float tapeTextToFloat (const String& text);
+    static String onOffFloatToText (float value);
+    static float onOffTextToFloat (const String& text);
     
     AudioProcessorValueTreeState parameters;
     

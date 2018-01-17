@@ -79,8 +79,16 @@ CwdelayAudioProcessor::CwdelayAudioProcessor() :
                                       String(),
                                       NormalisableRange<float> (0.f, 1.f, 1.f),
                                       0.f,
-                                      tapeFloatToText,
-                                      tapeTextToFloat);
+                                      onOffFloatToText,
+                                      onOffTextToFloat);
+    
+    parameters.createAndAddParameter ("crossMode",
+                                      "Cross-over Mode",
+                                      String(),
+                                      NormalisableRange<float> (0.f, 1.f, 1.f),
+                                      0.f,
+                                      onOffFloatToText,
+                                      onOffTextToFloat);
     
     parameters.state = ValueTree (Identifier ("OllySAPCW3"));
     LFO.setFrequency (7);
@@ -255,10 +263,13 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
         /* Delay time is calculated from delay parameter plus the LFOvalue. */
         const float delayValue = delaySize.getNextValue() + LFOvalue;
         
+        const int crossValue = *parameters.getRawParameterValue ("crossMode") < 0.5 ? 0 : 1;
+        
         for (int channel = 0; channel < totalNumInputChannels; ++channel)
         {
-            float in = buffer.getSample (channel, sample) + (out[channel] * feedbackValue);
-            delay.writeSample (in, channel);
+            float in = buffer.getSample (channel, sample) +
+                (out[channel] * feedbackValue);
+            delay.writeSample (in, (channel + crossValue) % totalNumInputChannels);
             
             /* Get the next sample from the delay. */
             out[channel] = filter.processSample (delay.getSample (delayValue, channel), channel);
@@ -348,12 +359,12 @@ float CwdelayAudioProcessor::LFO1Func(float angle)
 }
 
 
-String CwdelayAudioProcessor::tapeFloatToText (float value)
+String CwdelayAudioProcessor::onOffFloatToText (float value)
 {
     return value < 0.5 ? "Off" : "On";
 }
 
-float CwdelayAudioProcessor::tapeTextToFloat (const String& text)
+float CwdelayAudioProcessor::onOffTextToFloat (const String& text)
 {
     if (text == "Off") return 0.f;
     if (text == "On")  return 1.f;

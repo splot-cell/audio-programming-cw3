@@ -82,6 +82,9 @@ private:
     
     ToggleButton tapeModeButton;
     ScopedPointer<ButtonAttachment> tapeModeAttachment;
+    
+    ToggleButton crossModeButton;
+    ScopedPointer<ButtonAttachment> crossModeAttachment;
     //[/UserVariables]
 
     //==============================================================================
