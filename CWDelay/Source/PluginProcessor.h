@@ -78,5 +78,9 @@ private:
     VariableDelayLine delay;
     LPFilter filter;
     
+    dsp::Oscillator<float> LFO;
+    
+//    static float LFOFunc(float angle);
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CwdelayAudioProcessor)
 };

@@ -11,6 +11,12 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+//==============================================================================
+
+float LFOFunc(float angle)
+{
+    return 0.002 + (0.002 * sinf (angle));
+}
 
 //==============================================================================
 CwdelayAudioProcessor::CwdelayAudioProcessor() :
@@ -25,7 +31,8 @@ CwdelayAudioProcessor::CwdelayAudioProcessor() :
                        ),
 #endif
     parameters (*this, nullptr),
-    filter (126)
+    filter (126),
+    LFO (&LFOFunc, 128)
 {
     parameters.createAndAddParameter ("inputGain",                              // ID
                                       "Input Gain",                             // name
@@ -71,6 +78,7 @@ CwdelayAudioProcessor::CwdelayAudioProcessor() :
     parameters.addParameterListener ("wetLevel", this);
     
     parameters.state = ValueTree (Identifier ("OllySAPCW3"));
+    LFO.setFrequency (7);
 }
 
 CwdelayAudioProcessor::~CwdelayAudioProcessor()
@@ -144,6 +152,9 @@ void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
 {
     /* Required to be stored for calculating delay time in samples. */
     samplerate = (float) sampleRate;
+    
+    dsp::ProcessSpec spec = {sampleRate, 1, 1};
+    LFO.prepare (spec);
     
     /* Initalise parameters before playback begins. */
     previousInputGain = Decibels::decibelsToGain (*parameters.getRawParameterValue ("inputGain"), -90.f);
@@ -221,7 +232,9 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
     
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
-        const float delayValue = delaySize.getNextValue();
+        const float LFOvalue = LFO.processSample (1.f) * samplerate;
+        
+        const float delayValue = delaySize.getNextValue() + LFOvalue;
         const float wetLevelValue = wetLevel.getNextValue();
         const float feedbackValue = feedback.getNextValue();
         
@@ -256,6 +269,7 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
 }
 
 //==============================================================================
+
 void CwdelayAudioProcessor::parameterChanged(const String& parameterID, float newValue)
 {
     if (parameterID == "delayTime")
