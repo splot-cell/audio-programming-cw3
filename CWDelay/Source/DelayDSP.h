@@ -30,5 +30,5 @@ protected:
 private:
     AudioBuffer<float> delayLine;
     HeapBlock<int, true> writePoint;
-    int bitMask;
+    int delayLength;
 };

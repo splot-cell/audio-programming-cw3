@@ -15,28 +15,26 @@ float VariableDelayLine::getSample (float delaySize, int channel)
     const int delaySizeI = (int) delaySize;
     const float interpDelta = delaySize - delaySizeI;
     
-    const int readPoint = (writePoint[channel] - delaySizeI) & bitMask;
+    const int readPoint = (writePoint[channel] - delaySizeI + delayLength) % delayLength;
     
     const float sampleA = delayLine.getSample (channel, readPoint);
-    const float sampleB = delayLine.getSample (channel, (readPoint - 1) & bitMask);
+    const float sampleB = delayLine.getSample (channel, (readPoint - 1 + delayLength) % delayLength);
     
     return sampleA + interpDelta * (sampleB - sampleA);
 }
 
 void VariableDelayLine::writeSample (float value, int channel)
 {
-    delayLine.setSample (channel, ++writePoint[channel] & bitMask, value);
+    delayLine.setSample (channel, ++writePoint[channel] % delayLength, value);
+    writePoint[channel] = writePoint[channel] % delayLength;
 }
 
 void VariableDelayLine::prepareDelayLine (int delaySize, int numChannels)
 {
-    delayLine.setSize (numChannels, nextPowerOfTwo (delaySize));
+    delayLine.setSize (numChannels, delaySize);
     delayLine.clear();
     
+    delayLength = delaySize;
+    
     writePoint.calloc (numChannels);
-    
-    bitMask = nextPowerOfTwo (delaySize) - 1;
-    
-    for (int i = 0; i < numChannels; ++i)
-        writePoint[i] = 0;
 }
