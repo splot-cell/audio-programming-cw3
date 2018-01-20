@@ -90,6 +90,14 @@ CwdelayAudioProcessor::CwdelayAudioProcessor() :
                                       onOffFloatToText,
                                       onOffTextToFloat);
     
+    parameters.createAndAddParameter ("filterOn",
+                                      "Filter",
+                                      String(),
+                                      NormalisableRange<float> (0.f, 1.f, 1.f),
+                                      1.f,
+                                      onOffFloatToText,
+                                      onOffTextToFloat);
+    
     parameters.state = ValueTree (Identifier ("OllySAPCW3"));
     LFO.setFrequency (7);
     LFO1.setFrequency (0.46);
@@ -272,7 +280,14 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
             delay.writeSample (in, (channel + crossValue) % totalNumInputChannels);
             
             /* Get the next sample from the delay. */
-            out[channel] = filter.processSample (delay.getSample (delayValue, channel), channel);
+            in = delay.getSample (delayValue, channel);
+            
+            /* Process the sample in the filter so switching filter on/off is instantanious. */
+            out[channel] = filter.processSample (in, channel);
+            
+            /* If filter is off, disregard filtered sample. */
+            if (*parameters.getRawParameterValue ("filterOn") < 0.5)
+                out[channel] = in;
             
             /* Dry / wet logic */
             buffer.applyGain (channel, sample, 1, 1. - wetLevelValue);

@@ -85,6 +85,9 @@ private:
 
     ToggleButton crossModeButton;
     ScopedPointer<ButtonAttachment> crossModeAttachment;
+    
+    ToggleButton filterButton;
+    ScopedPointer<ButtonAttachment> filterAttachment;
     //[/UserVariables]
 
     //==============================================================================

@@ -97,6 +97,11 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     addAndMakeVisible (crossModeButton);
     crossModeAttachment = new ButtonAttachment (valueTreeState, "crossMode", crossModeButton);
     ++numberOfRows;
+    
+    filterButton.setButtonText ("Filter");
+    addAndMakeVisible (filterButton);
+    filterAttachment = new ButtonAttachment (valueTreeState, "filterOn", filterButton);
+    ++numberOfRows;
     //[/Constructor_pre]
 
 
@@ -167,6 +172,8 @@ void CwdelayAudioProcessorEditor::resized()
         tapeModeButton.setBounds (sliderArea.getX(), sliderArea.getY(), remainingWidth, parameterButtonHeight);
         sliderArea.removeFromTop (verticalSpacing);
         crossModeButton.setBounds (sliderArea.getX(), sliderArea.getY(), remainingWidth, parameterButtonHeight);
+        sliderArea.removeFromTop (verticalSpacing);
+        filterButton.setBounds (sliderArea.getX(), sliderArea.getY(), remainingWidth, parameterButtonHeight);
     }
     //[/UserPreResize]
 
