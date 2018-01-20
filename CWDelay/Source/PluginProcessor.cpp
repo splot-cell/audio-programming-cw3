@@ -197,15 +197,15 @@ void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
      * As delaySize must be integer, add 1 to total to avoid errors through truncation in
      * the case where sampleRate * (1 + maxLFOOffset) is a float. */
     delay.prepareDelayLine (1 + sampleRate * (1 + maxLFOOffset), getTotalNumInputChannels());
+    out.calloc (getTotalNumInputChannels());
     
     filter.prepareForAudio (2000, sampleRate, getTotalNumInputChannels());
 }
 
 void CwdelayAudioProcessor::releaseResources()
 {
-    // When playback stops, you can use this as an opportunity to free up any
-    // spare memory, etc.
     // Potentially put free delay line in here.............
+    // And free out
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -252,10 +252,6 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
         }
     }
     
-    float out[totalNumInputChannels];
-    for ( int i = 0; i < totalNumInputChannels; ++i)
-        out[i] = 0;
-    
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
         /* Get parameter values here: per sample, not per channel.
@@ -271,6 +267,8 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
         /* Delay time is calculated from delay parameter plus the LFOvalue. */
         const float delayValue = delaySize.getNextValue() + LFOvalue;
         
+        /* Cross value is a channel offset used to give "ping pong" style effects when plugin
+         * is fed a single channel input. */
         const int crossValue = *parameters.getRawParameterValue ("crossMode") < 0.5 ? 0 : 1;
         
         for (int channel = 0; channel < totalNumInputChannels; ++channel)
@@ -291,7 +289,6 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
             
             /* Dry / wet logic */
             buffer.applyGain (channel, sample, 1, 1. - wetLevelValue);
-            
             buffer.addSample (channel, sample, wetLevelValue * out[channel]);
         }
     }

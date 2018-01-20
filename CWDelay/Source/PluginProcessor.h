@@ -95,6 +95,8 @@ private:
     VariableDelayLine delay;
     LPFilter filter;
     
+    HeapBlock<float> out; // For storing feedback samples
+    
     dsp::Oscillator<float> LFO;
     dsp::Oscillator<float> LFO1;
     

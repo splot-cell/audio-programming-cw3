@@ -3,7 +3,7 @@
 <JUCERPROJECT id="NO4KJo" name="CWDelay" displaySplashScreen="1" reportAppUsage="1"
               splashScreenColour="Dark" projectType="audioplug" version="1.0.0"
               bundleIdentifier="com.yourcompany.CWDelay" includeBinaryInAppConfig="1"
-              cppLanguageStandard="11" companyCopyright="" buildVST="0" buildVST3="0"
+              cppLanguageStandard="14" companyCopyright="" buildVST="0" buildVST3="0"
               buildAU="1" buildAUv3="0" buildRTAS="0" buildAAX="0" buildStandalone="0"
               enableIAA="0" pluginName="CWDelay" pluginDesc="CWDelay" pluginManufacturer="yourcompany"
               pluginManufacturerCode="Manu" pluginCode="No4k" pluginChannelConfigs=""
