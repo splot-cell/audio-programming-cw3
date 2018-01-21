@@ -97,11 +97,13 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     addAndMakeVisible (crossModeButton);
     crossModeAttachment = new ButtonAttachment (valueTreeState, "crossMode", crossModeButton);
     ++numberOfRows;
-    
+
     filterButton.setButtonText ("Filter");
     addAndMakeVisible (filterButton);
     filterAttachment = new ButtonAttachment (valueTreeState, "filterOn", filterButton);
     ++numberOfRows;
+
+    addAndMakeVisible (helpComponent, 0); // Zero flag to add component behind others
     //[/Constructor_pre]
 
 
@@ -112,6 +114,7 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
 
 
     //[Constructor] You can add your own custom stuff here..
+    startTimer (10);
     //[/Constructor]
 }
 
@@ -174,6 +177,8 @@ void CwdelayAudioProcessorEditor::resized()
         crossModeButton.setBounds (sliderArea.getX(), sliderArea.getY(), remainingWidth, parameterButtonHeight);
         sliderArea.removeFromTop (verticalSpacing);
         filterButton.setBounds (sliderArea.getX(), sliderArea.getY(), remainingWidth, parameterButtonHeight);
+
+        helpComponent.setBounds (getLocalBounds());
     }
     //[/UserPreResize]
 
@@ -184,6 +189,10 @@ void CwdelayAudioProcessorEditor::resized()
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+void CwdelayAudioProcessorEditor::timerCallback()
+{
+    helpComponent.repaint();
+}
 //[/MiscUserCode]
 
 
@@ -197,7 +206,7 @@ void CwdelayAudioProcessorEditor::resized()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="CwdelayAudioProcessorEditor"
-                 componentName="" parentClasses="public AudioProcessorEditor"
+                 componentName="" parentClasses="public AudioProcessorEditor, public Timer"
                  constructorParams="CwdelayAudioProcessor&amp; p, AudioProcessorValueTreeState&amp; vts"
                  variableInitialisers="AudioProcessorEditor (&amp;p), processor (p), valueTreeState (vts)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"

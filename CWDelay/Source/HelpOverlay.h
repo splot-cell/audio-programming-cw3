@@ -25,5 +25,7 @@ public:
     void resized() override;
 
 private:
+    bool onTop; // Used to track awareness of being on top or behind other components.
+    Label helpButton; // Not actually a button but used as a "hover sensitive" button hence the name.
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HelpOverlay)
 };

@@ -22,6 +22,7 @@
 //[Headers]     -- You can add your own extra header files here --
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "GainSlider.h"
+#include "HelpOverlay.h"
 //[/Headers]
 
 
@@ -34,7 +35,8 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class CwdelayAudioProcessorEditor  : public AudioProcessorEditor
+class CwdelayAudioProcessorEditor  : public AudioProcessorEditor,
+                                     public Timer
 {
 public:
     //==============================================================================
@@ -45,6 +47,8 @@ public:
     //[UserMethods]     -- You can add your own custom methods in this section.
     typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
     typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
+
+    void timerCallback() override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -85,9 +89,11 @@ private:
 
     ToggleButton crossModeButton;
     ScopedPointer<ButtonAttachment> crossModeAttachment;
-    
+
     ToggleButton filterButton;
     ScopedPointer<ButtonAttachment> filterAttachment;
+
+    HelpOverlay helpComponent;
     //[/UserVariables]
 
     //==============================================================================
