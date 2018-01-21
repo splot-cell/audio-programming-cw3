@@ -178,7 +178,9 @@ void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     /* ProcessSpec contains the samplerate, max block size, and number of channels.
      * Each sample will be called individually in this implementation, and each LFO is shared
      * between both channels. */
-    dsp::ProcessSpec spec = {sampleRate, 1, 1};
+    const int LFOblockSize = 1;
+    const int numLFOchannels = 1;
+    dsp::ProcessSpec spec = {samplerate, LFOblockSize, numLFOchannels};
     LFO.prepare (spec);
     LFO1.prepare (spec);
     
@@ -191,28 +193,30 @@ void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     delaySize.setValue (*parameters.getRawParameterValue ("delayTime") * sampleRate);
     delaySize.reset (sampleRate, rampTime);
     
-    wetLevel.setValue (*parameters.getRawParameterValue ("wetLevel") / 100); // Parameter is a percentage
+    wetLevel.setValue (*parameters.getRawParameterValue ("wetLevel") / 100.f); // Parameter is a percentage
     wetLevel.reset (sampleRate, rampTime);
     
-    feedback.setValue (*parameters.getRawParameterValue ("feedback") / 100); // Parameter is a percentage
+    feedback.setValue (*parameters.getRawParameterValue ("feedback") / 100.f); // Parameter is a percentage
     feedback.reset (sampleRate, rampTime);
     
     /* Prepare delayline for 1 sec plus the max LFO offset worth of samples.
      * As delaySize must be integer, add 1 to total to avoid errors through truncation in
      * the case where sampleRate * (1 + maxLFOOffset) is a float. */
     delay.prepareDelayLine (1 + sampleRate * (1 + maxLFOOffset), getTotalNumInputChannels());
+    
+    /* Allocate memory for feedback samples. */
     out.calloc (getTotalNumInputChannels());
     
-    filter.prepareForAudio (2000, sampleRate, getTotalNumInputChannels());
+    /* Set cutoff frequency and number of channels in filter. */
+    const int filterFreq = 2000; // Hz
+    filter.prepareForAudio (filterFreq, sampleRate, getTotalNumInputChannels());
 }
 
 void CwdelayAudioProcessor::releaseResources()
 {
+    /* Free all allocated memory. */
     delay.freeMemory();
     out.free();
-    
-    // Potentially put free delay line in here.............
-    // And free out
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -222,13 +226,12 @@ bool CwdelayAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) 
     ignoreUnused (layouts);
     return true;
   #else
-    // This is the place where you check if the layout is supported.
-    // In this template code we only support mono or stereo.
+    /* Support for Mono and Stereo. */
     if (layouts.getMainOutputChannelSet() != AudioChannelSet::mono()
      && layouts.getMainOutputChannelSet() != AudioChannelSet::stereo())
         return false;
 
-    // This checks if the input layout matches the output layout
+    /* Check if input layout matches output layout. */
    #if ! JucePlugin_IsSynth
     if (layouts.getMainOutputChannelSet() != layouts.getMainInputChannelSet())
         return false;
@@ -259,6 +262,7 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
         }
     }
     
+    /* Sample by sample prcoessing. */
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
         /* Get parameter values here: per sample, not per channel.
@@ -267,7 +271,8 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
         const float feedbackValue = feedback.getNextValue();
         
         /* If "tapeMode" parameter is below 0.5, set LFOvalue to nothing. Otherwise, get next
-         * values from the LFOs. */
+         * values from the LFOs. This will be used to modulate the delaytime, so multiply by
+         * samplerate to get a time in samples. */
         const float LFOvalue = *parameters.getRawParameterValue ("tapeMode") < 0.5 ? 0.f :
             (LFO.processSample (1.f) + LFO1.processSample (1.f)) * samplerate;
         
@@ -278,8 +283,10 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
          * is fed a single channel input. */
         const int crossValue = *parameters.getRawParameterValue ("crossMode") < 0.5 ? 0 : 1;
         
+        /* Channel by channel processing. */
         for (int channel = 0; channel < totalNumInputChannels; ++channel)
         {
+            /* Write input sample into delayline. */
             float in = buffer.getSample (channel, sample) +
                 (out[channel] * feedbackValue);
             delay.writeSample (in, (channel + crossValue) % totalNumInputChannels);
@@ -319,14 +326,15 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
 
 //==============================================================================
 
+/* Callback function. */
 void CwdelayAudioProcessor::parameterChanged(const String& parameterID, float newValue)
 {
     if (parameterID == "delayTime")
         delaySize.setValue (newValue * samplerate); // delaySize is in samples, newValue in seconds
     else if (parameterID == "wetLevel")
-        wetLevel.setValue (newValue / 100); // Parameter is a percentage
+        wetLevel.setValue (newValue / 100.f); // Parameter is a percentage
     else if (parameterID == "feedback")
-        feedback.setValue (newValue / 100); // Parameter is a percentage
+        feedback.setValue (newValue / 100.f); // Parameter is a percentage
 }
 
 //==============================================================================
@@ -377,12 +385,13 @@ float CwdelayAudioProcessor::LFO1Func(float angle)
     return LFO1depth + (LFO1depth * sinf (angle));
 }
 
-
+/* Convert float to text for binary parameters. */
 String CwdelayAudioProcessor::onOffFloatToText (float value)
 {
     return value < 0.5 ? "Off" : "On";
 }
 
+/* Convert text to float for binary parameters. */
 float CwdelayAudioProcessor::onOffTextToFloat (const String& text)
 {
     if (text == "Off") return 0.f;
