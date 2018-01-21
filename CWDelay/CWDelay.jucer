@@ -19,9 +19,11 @@
         <FILE id="TBwqqc" name="DelayDSP.cpp" compile="1" resource="0" file="Source/DelayDSP.cpp"/>
         <FILE id="Tgbenv" name="DelayDSP.h" compile="0" resource="0" file="Source/DelayDSP.h"/>
       </GROUP>
-      <GROUP id="{E36ED2C9-2699-99BC-D54F-BAB0DD2B06F9}" name="CustomSliders">
+      <GROUP id="{E36ED2C9-2699-99BC-D54F-BAB0DD2B06F9}" name="CustomGUI">
         <FILE id="Npxp0M" name="GainSlider.cpp" compile="1" resource="0" file="Source/GainSlider.cpp"/>
         <FILE id="K9A9rG" name="GainSlider.h" compile="0" resource="0" file="Source/GainSlider.h"/>
+        <FILE id="Ca47FG" name="HelpOverlay.cpp" compile="1" resource="0" file="Source/HelpOverlay.cpp"/>
+        <FILE id="gUQ647" name="HelpOverlay.h" compile="0" resource="0" file="Source/HelpOverlay.h"/>
       </GROUP>
       <FILE id="YH8bc4" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
