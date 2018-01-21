@@ -8,13 +8,19 @@
   ==============================================================================
 */
 
+/*
+ GUI component for providing a help text overlay within the plugin window.
+ 
+ The GUI updates every time the repaint() method is called from the parent component to either
+ show the help text or not.
+ */
+
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
 //==============================================================================
-/*
-*/
+
 class HelpOverlay    : public Component
 {
 public:

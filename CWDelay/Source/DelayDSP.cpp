@@ -10,6 +10,8 @@
 
 #include "DelayDSP.h"
 
+//==============================================================================
+
 float VariableDelayLine::getSample (float delaySize, int channel)
 {
     const int delaySizeI = (int) delaySize;
@@ -37,4 +39,10 @@ void VariableDelayLine::prepareDelayLine (int delaySize, int numChannels)
     delayLength = delaySize;
     
     writePoint.calloc (numChannels);
+}
+
+void VariableDelayLine::freeMemory()
+{
+    delayLine.setSize (0, 0);
+    writePoint.free();
 }

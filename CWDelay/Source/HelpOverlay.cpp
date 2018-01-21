@@ -12,6 +12,7 @@
 #include "HelpOverlay.h"
 
 //==============================================================================
+
 HelpOverlay::HelpOverlay() : onTop (false)
 {
     helpButton.setText ("Hover for help", dontSendNotification);

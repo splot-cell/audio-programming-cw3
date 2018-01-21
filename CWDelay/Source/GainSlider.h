@@ -8,9 +8,18 @@
   ==============================================================================
 */
 
+/*
+ Custom slider component.
+ 
+ Displays gain in dB down to -inf dB, which is a user-setable limit.
+ Rounds gain value to user-setable number of decimal places.
+ */
+
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+
+//==============================================================================
 
 class GainSlider : public Slider
 {

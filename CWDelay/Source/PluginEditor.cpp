@@ -74,6 +74,7 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     addAndMakeVisible (feedbackLabel);
 
     feedbackSlider.setSliderStyle (juce::Slider::LinearBarVertical);
+    feedbackSlider.setTextValueSuffix ("%");
     addAndMakeVisible (feedbackSlider);
     feedbackAttachment = new SliderAttachment (valueTreeState, "feedback", feedbackSlider);
     ++numberOfSliders;

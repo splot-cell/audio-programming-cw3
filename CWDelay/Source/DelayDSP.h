@@ -8,14 +8,22 @@
   ==============================================================================
 */
 
+/*
+ Simple delay line class implementing linear interpolation between samples.
+ */
+
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+
+//==============================================================================
 
 class VariableDelayLine
 {
 public:
     void prepareDelayLine (int delaySize, int numChannels);
+    
+    void freeMemory (void);
     
     void writeSample (float value, int channel);
     

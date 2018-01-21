@@ -10,6 +10,8 @@
 
 #include "FilterDSP.h"
 #include <cmath>
+
+//==============================================================================
                                 
 void LPFilter::setCoef (float frequency, float samplerate)
 {

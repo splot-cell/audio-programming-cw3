@@ -1,20 +1,18 @@
 /*
-  ==============================================================================
-
-    This file was auto-generated!
-
-    It contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
+ ==============================================================================
+ 
+ PluginProcessor.cpp
+ Created from a JUCE template.
+ Author:  Olly Seber
+ 
+ ==============================================================================
+ */
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
 //==============================================================================
 
-
-//==============================================================================
 CwdelayAudioProcessor::CwdelayAudioProcessor() :
 #ifndef JucePlugin_PreferredChannelConfigurations
        AudioProcessor (BusesProperties()
@@ -26,50 +24,51 @@ CwdelayAudioProcessor::CwdelayAudioProcessor() :
                      #endif
                        ),
 #endif
-    parameters (*this, nullptr),
-    filter (126),
-    LFO (LFOFunc, LFOResolution),
+    parameters (*this, nullptr),    // Initialise the ValueTreeState for handling parameters.
+    filter (126),                   // Set filter order.
+    LFO (LFOFunc, LFOResolution),   // Set up each LFO.
     LFO1 (LFO1Func, LFOResolution)
 {
-    parameters.createAndAddParameter ("inputGain",                              // ID
-                                      "Input Gain",                             // name
-                                      "dB",                                     // suffix
-                                      NormalisableRange<float> (-90.f, 0.f, 0.f, 5.f),    // set range
-                                      -6.f,                                     // default value
-                                      nullptr,
-                                      nullptr);
+    /* Set up all the parameters. */
+    parameters.createAndAddParameter ("inputGain",                                      // ID
+                                      "Input Gain",                                     // name
+                                      "dB",                                             // suffix
+                                      NormalisableRange<float> (-90.f, 0.f, 0.f, 5.f),  // set range
+                                      -6.f,                                             // default value
+                                      nullptr,                                          // Value to text function
+                                      nullptr);                                         // Text to value function
     
-    parameters.createAndAddParameter ("outputGain",                             // ID
-                                      "Output Gain",                            // name
-                                      "dB",                                     // suffix
-                                      NormalisableRange<float> (-90.f, 0.f, 0.f, 5.f),    // set range
-                                      -6.f,                                     // default value
-                                      nullptr,
-                                      nullptr);
+    parameters.createAndAddParameter ("outputGain",                                     // ID
+                                      "Output Gain",                                    // name
+                                      "dB",                                             // suffix
+                                      NormalisableRange<float> (-90.f, 0.f, 0.f, 5.f),  // set range
+                                      -6.f,                                             // default value
+                                      nullptr,                                          // Value to text function
+                                      nullptr);                                         // Text to value function
     
-    parameters.createAndAddParameter ("delayTime",                              // ID
-                                      "Delay Time",                             // name
-                                      "s",                                      // suffix
-                                      NormalisableRange<float> (0.f, 1.f, 0.001f, 0.7f),    // set range
-                                      0.5f,                                     // default value
+    parameters.createAndAddParameter ("delayTime",
+                                      "Delay Time",
+                                      "s",
+                                      NormalisableRange<float> (0.f, 1.f, 0.001f, 0.7f),
+                                      0.5f,
                                       nullptr,
                                       nullptr);
     parameters.addParameterListener ("delayTime", this);
     
-    parameters.createAndAddParameter ("feedback",                               // ID
-                                      "Feedback",                               // name
-                                      String(),                                 // suffix
-                                      NormalisableRange<float> (0.f, 1.f, 0.001f, 1.f),    // set range
-                                      0.7f,                                     // default value
+    parameters.createAndAddParameter ("feedback",
+                                      "Feedback",
+                                      "%",
+                                      NormalisableRange<float> (0.f, 100.f, 1.f, 1.f),
+                                      70.f,
                                       nullptr,
                                       nullptr);
     parameters.addParameterListener ("feedback", this);
     
-    parameters.createAndAddParameter ("wetLevel",                               // ID
-                                      "Dry Wet Mix",                            // name
-                                      String(),                                 // suffix
-                                      NormalisableRange<float> (0.f, 100.f, 1.f, 1.f),    // set range
-                                      50.f,                                     // default value
+    parameters.createAndAddParameter ("wetLevel",
+                                      "Dry Wet Mix",
+                                      "%",
+                                      NormalisableRange<float> (0.f, 100.f, 1.f, 1.f),
+                                      50.f,
                                       nullptr,
                                       nullptr);
     parameters.addParameterListener ("wetLevel", this);
@@ -79,8 +78,8 @@ CwdelayAudioProcessor::CwdelayAudioProcessor() :
                                       String(),
                                       NormalisableRange<float> (0.f, 1.f, 1.f),
                                       0.f,
-                                      onOffFloatToText,
-                                      onOffTextToFloat);
+                                      onOffFloatToText,     // Value to text function
+                                      onOffTextToFloat);    // Text to value function
     
     parameters.createAndAddParameter ("crossMode",
                                       "Cross-over Mode",
@@ -98,9 +97,9 @@ CwdelayAudioProcessor::CwdelayAudioProcessor() :
                                       onOffFloatToText,
                                       onOffTextToFloat);
     
-    parameters.state = ValueTree (Identifier ("OllySAPCW3"));
-    LFO.setFrequency (7);
-    LFO1.setFrequency (0.46);
+    parameters.state = ValueTree (Identifier ("OllySAPCW3")); // Finish ValueTreeState initialisation.
+    LFO.setFrequency (7); // Flutter
+    LFO1.setFrequency (0.46); // WOW
 }
 
 CwdelayAudioProcessor::~CwdelayAudioProcessor()
@@ -148,7 +147,8 @@ double CwdelayAudioProcessor::getTailLengthSeconds() const
 int CwdelayAudioProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
-                // so this should be at least 1, even if you're not really implementing programs.
+                // so this should be at least 1, even if you're not really implementing programs
+                // (which I'm not).
 }
 
 int CwdelayAudioProcessor::getCurrentProgram()
@@ -175,23 +175,27 @@ void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     /* Required to be stored for calculating delay time in samples. */
     samplerate = (float) sampleRate;
     
+    /* ProcessSpec contains the samplerate, max block size, and number of channels.
+     * Each sample will be called individually in this implementation, and each LFO is shared
+     * between both channels. */
     dsp::ProcessSpec spec = {sampleRate, 1, 1};
     LFO.prepare (spec);
     LFO1.prepare (spec);
     
     /* Initalise parameters before playback begins. */
     previousInputGain = Decibels::decibelsToGain (*parameters.getRawParameterValue ("inputGain"), -90.f);
-    
     previousOutputGain = Decibels::decibelsToGain (*parameters.getRawParameterValue ("outputGain"), -90.f);
     
+    /* Set up ramping parameter values */
+    const float rampTime = 0.2; // Seconds
     delaySize.setValue (*parameters.getRawParameterValue ("delayTime") * sampleRate);
-    delaySize.reset (sampleRate, 0.2);
+    delaySize.reset (sampleRate, rampTime);
     
-    wetLevel.setValue (*parameters.getRawParameterValue ("wetLevel") / 100);
-    wetLevel.reset (sampleRate, 0.2);
+    wetLevel.setValue (*parameters.getRawParameterValue ("wetLevel") / 100); // Parameter is a percentage
+    wetLevel.reset (sampleRate, rampTime);
     
-    feedback.setValue (*parameters.getRawParameterValue ("feedback"));
-    feedback.reset (sampleRate, 0.2);
+    feedback.setValue (*parameters.getRawParameterValue ("feedback") / 100); // Parameter is a percentage
+    feedback.reset (sampleRate, rampTime);
     
     /* Prepare delayline for 1 sec plus the max LFO offset worth of samples.
      * As delaySize must be integer, add 1 to total to avoid errors through truncation in
@@ -204,6 +208,9 @@ void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
 
 void CwdelayAudioProcessor::releaseResources()
 {
+    delay.freeMemory();
+    out.free();
+    
     // Potentially put free delay line in here.............
     // And free out
 }
@@ -315,11 +322,11 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
 void CwdelayAudioProcessor::parameterChanged(const String& parameterID, float newValue)
 {
     if (parameterID == "delayTime")
-        delaySize.setValue (newValue * samplerate);
+        delaySize.setValue (newValue * samplerate); // delaySize is in samples, newValue in seconds
     else if (parameterID == "wetLevel")
-        wetLevel.setValue (newValue / 100);
+        wetLevel.setValue (newValue / 100); // Parameter is a percentage
     else if (parameterID == "feedback")
-        feedback.setValue (newValue);
+        feedback.setValue (newValue / 100); // Parameter is a percentage
 }
 
 //==============================================================================

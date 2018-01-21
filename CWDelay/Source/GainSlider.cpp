@@ -10,6 +10,7 @@
 
 #include "GainSlider.h"
 
+//==============================================================================
 
 String GainSlider::getTextFromValue (double value)
 {
