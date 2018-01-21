@@ -30,9 +30,22 @@
 //==============================================================================
 /**
                                                                     //[Comments]
-    An auto-generated component, created by the Projucer.
-
-    Describe your class and how it works here!
+    AUDIO PROCESSOR EDITOR
+ 
+    PARAMETERS
+    All UI controls are linked to the ValueTreeState object in the processor using "attachments".
+    This allows easy updating of paramter changes.
+ 
+    HELP OVERLAY
+    The HelpOverlay component, which displays the help text, is implemented using a timer callback
+    hence the timer base class. This is because the text shows when the use hovers the mouse over a
+    certain part of the window. There is no JUCE callback for this. Instead, the timer callback
+    triggers the component to check if the mouse if hovering and update itself.
+ 
+    GUI DESIGN
+    The GUI layout is based on a grid. The numberOfColumns and numberOfRows members keep track of
+    how many GUI elements need to fit in the window. In the resize() method, these members are used
+    to calculate the grid spacing, into which the sliders, labels, and buttons are placed.
                                                                     //[/Comments]
 */
 class CwdelayAudioProcessorEditor  : public AudioProcessorEditor,
@@ -45,25 +58,28 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    /* typedefs for ease. Placed here so inside the class, but have to be public so ScopedPointer
+     * can access them. */
     typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
     typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
 
-    void timerCallback() override;
+    void timerCallback() override; // Used to update help text component.
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
 
 
-
+    
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     CwdelayAudioProcessor& processor;
 
-    AudioProcessorValueTreeState& valueTreeState;
-    int numberOfSliders; // For easy distribution of controls within the plugin window.
-    int numberOfRows;
-
+    AudioProcessorValueTreeState& valueTreeState; // Reference to the valueTreeState in the processor.
+    int numberOfColumns; // For easy distribution of controls within the plugin window.
+    int numberOfRows; // For easy distribution of controls.
+    
+    /* GUI components. */
     Label inputGainLabel;
     GainSlider inputGainSlider;
     ScopedPointer<SliderAttachment> inputGainAttachment;

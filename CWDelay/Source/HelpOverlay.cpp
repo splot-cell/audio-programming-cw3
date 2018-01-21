@@ -15,6 +15,7 @@
 
 HelpOverlay::HelpOverlay() : onTop (false)
 {
+    /* Add the hover "button". */
     helpButton.setText ("Hover for help", dontSendNotification);
     addAndMakeVisible (helpButton);
 }
@@ -42,7 +43,7 @@ void HelpOverlay::paint (Graphics& g)
         g.setColour (Colours::grey);
         g.drawRect (getLocalBounds(), 2);
         
-        /* White text. */
+        /* White text, size 14. */
         g.setColour (Colours::white);
         g.setFont (14.0f);
         
@@ -79,7 +80,8 @@ void HelpOverlay::paint (Graphics& g)
 
 void HelpOverlay::resized()
 {
-    /* Set the position of the "Hover for help" text to be in the bottom right of the component. */
+    /* Set the position of the "Hover for help" text to be in the bottom right of the component and
+     * set label size. */
     
     const Rectangle<int> r = getLocalBounds();
 

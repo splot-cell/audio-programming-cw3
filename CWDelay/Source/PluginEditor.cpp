@@ -25,11 +25,12 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
+/* ENUM for storing some GUI parameters, for easy editing. */
 enum
 {
-    parameterPercentagePadding = 10,
-    parameterSliderPadding = 2,
-    parameterLabelSpacing = 8,
+    parameterPercentagePadding = 10, // Margin around the GUI controls.
+    parameterSliderPadding = 2, // Padding between sliders.
+    parameterLabelSpacing = 8, // Spacing between labels and sliders.
     parameterLabelHeight = 24,
     parameterButtonHeight = 50
 };
@@ -40,9 +41,12 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     : AudioProcessorEditor (&p), processor (p), valueTreeState (vts)
 {
     //[Constructor_pre] You can add your own custom stuff here..
-    numberOfSliders = 0;
-    numberOfRows = 1; // Initialise to one in order to centralise coordinates.
+    numberOfColumns = 0; // Keep track of number of columns in grid layout.
+    numberOfRows = 1; // Start counting at one in order to centre rows vertically.
 
+    /* Add all the labels and sliders.
+     * The attachment objects connect these controls to the parameters stored in the ValueTreeState
+     * object in the processor. */
     inputGainLabel.setText ("Input Gain", dontSendNotification);
     addAndMakeVisible (inputGainLabel);
 
@@ -50,7 +54,7 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     inputGainSlider.setTextValueSuffix("dB");
     addAndMakeVisible (inputGainSlider);
     inputGainAttachment = new SliderAttachment (valueTreeState, "inputGain", inputGainSlider);
-    ++numberOfSliders;
+    ++numberOfColumns; // Add another column for each slider.
 
     outputGainLabel.setText ("Output Gain", dontSendNotification);
     addAndMakeVisible (outputGainLabel);
@@ -59,7 +63,7 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     outputGainSlider.setTextValueSuffix("dB");
     addAndMakeVisible (outputGainSlider);
     outputGainAttachment = new SliderAttachment (valueTreeState, "outputGain", outputGainSlider);
-    ++numberOfSliders;
+    ++numberOfColumns;
 
     delayTimeLabel.setText ("Delay Time", dontSendNotification);
     addAndMakeVisible (delayTimeLabel);
@@ -68,7 +72,7 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     delayTimeSlider.setTextValueSuffix ("s");
     addAndMakeVisible (delayTimeSlider);
     delayTimeAttachment = new SliderAttachment (valueTreeState, "delayTime", delayTimeSlider);
-    ++numberOfSliders;
+    ++numberOfColumns;
 
     feedbackLabel.setText ("Feedback", dontSendNotification);
     addAndMakeVisible (feedbackLabel);
@@ -77,7 +81,7 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     feedbackSlider.setTextValueSuffix ("%");
     addAndMakeVisible (feedbackSlider);
     feedbackAttachment = new SliderAttachment (valueTreeState, "feedback", feedbackSlider);
-    ++numberOfSliders;
+    ++numberOfColumns;
 
     dryWetLabel.setText ("Dry Wet Mix", dontSendNotification);
     addAndMakeVisible (dryWetLabel);
@@ -86,13 +90,14 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     dryWetSlider.setTextValueSuffix ("%");
     addAndMakeVisible (dryWetSlider);
     dryWetAttachment = new SliderAttachment (valueTreeState, "wetLevel", dryWetSlider);
-    ++numberOfSliders;
+    ++numberOfColumns;
 
+    /* Add all the buttons. */
     tapeModeButton.setButtonText ("Tape Mode");
     addAndMakeVisible (tapeModeButton);
     tapeModeAttachment = new ButtonAttachment (valueTreeState, "tapeMode", tapeModeButton);
-    ++numberOfSliders;
-    ++numberOfRows;
+    ++numberOfColumns; // Add a column for the buttons.
+    ++numberOfRows; // Add a row for each new button.
 
     crossModeButton.setButtonText ("Cross-over Mode\n(stereo only)");
     addAndMakeVisible (crossModeButton);
@@ -104,7 +109,8 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
     filterAttachment = new ButtonAttachment (valueTreeState, "filterOn", filterButton);
     ++numberOfRows;
 
-    addAndMakeVisible (helpComponent, 0); // Zero flag to add component behind others
+    /* Add the help text component. */
+    addAndMakeVisible (helpComponent, 0); // Zero flag to add component behind its siblings.
     //[/Constructor_pre]
 
 
@@ -115,7 +121,7 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
 
 
     //[Constructor] You can add your own custom stuff here..
-    startTimer (10);
+    startTimer (10); // Timer callback required to update for the help component.
     //[/Constructor]
 }
 
@@ -145,17 +151,24 @@ void CwdelayAudioProcessorEditor::paint (Graphics& g)
 void CwdelayAudioProcessorEditor::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
+    /* Get the size of the window. */
     Rectangle<int> r = getLocalBounds();
     {
+        /* Get an area for sliders that is reduced by the padding percentage set in the enum above.
+         * Multiply by 0.01 is because this is a percentage. */
         Rectangle<int> sliderArea = r.reduced
             (r.getWidth() * 0.01 * parameterPercentagePadding, r.getHeight() * 0.01 * parameterPercentagePadding);
 
+        /* Get an area for labels. */
         Rectangle<int> labelArea = sliderArea.removeFromBottom (parameterLabelHeight);
         sliderArea.removeFromBottom (parameterLabelSpacing); // Add paddding between sliders and labels
-
-        const float horizontalSpacing = sliderArea.getWidth() / numberOfSliders;
+        
+        /* Calculate spacing of rows and columns in the grid from number of sliders and buttons
+         * added in constructor. */
+        const float horizontalSpacing = sliderArea.getWidth() / numberOfColumns;
         const float verticalSpacing = sliderArea.getHeight() / numberOfRows;
-
+        
+        /* Set the size of each label and slider based on the spacing calculated. Add padding to sliders. */
         inputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
         inputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing).reduced (parameterSliderPadding));
 
@@ -170,15 +183,19 @@ void CwdelayAudioProcessorEditor::resized()
 
         outputGainLabel.setBounds (labelArea.removeFromLeft (horizontalSpacing));
         outputGainSlider.setBounds (sliderArea.removeFromLeft (horizontalSpacing).reduced (parameterSliderPadding));
-
+        
+        /* Let the text run into the margin, as it looks better than wrapping for no real reason.
+         * First calculate remaining space in window. */
         const float remainingWidth = r.getRight() - sliderArea.getX();
+        /* Set sizing and position of each button. */
         sliderArea.removeFromTop (verticalSpacing);
         tapeModeButton.setBounds (sliderArea.getX(), sliderArea.getY(), remainingWidth, parameterButtonHeight);
         sliderArea.removeFromTop (verticalSpacing);
         crossModeButton.setBounds (sliderArea.getX(), sliderArea.getY(), remainingWidth, parameterButtonHeight);
         sliderArea.removeFromTop (verticalSpacing);
         filterButton.setBounds (sliderArea.getX(), sliderArea.getY(), remainingWidth, parameterButtonHeight);
-
+        
+        /* Help component should cover whole window. */
         helpComponent.setBounds (getLocalBounds());
     }
     //[/UserPreResize]
@@ -190,9 +207,10 @@ void CwdelayAudioProcessorEditor::resized()
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+/* No callback function for a mouse hover, so have to use a timer to update the help text component. */
 void CwdelayAudioProcessorEditor::timerCallback()
 {
-    helpComponent.repaint();
+    helpComponent.repaint(); // Calls the paint() method.
 }
 //[/MiscUserCode]
 

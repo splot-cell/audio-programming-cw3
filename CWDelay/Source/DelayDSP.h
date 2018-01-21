@@ -21,12 +21,16 @@
 class VariableDelayLine
 {
 public:
+    /* Allocated required memory. */
     void prepareDelayLine (int delaySize, int numChannels);
     
-    void freeMemory (void);
+    /* Free allocated memroy. */
+    void freeMemory ();
     
+    /* Write a sample to a channel of the delay. */
     void writeSample (float value, int channel);
     
+    /* Get the next delayed sample for a given channel. */
     float getSample (float delaySize, int channel);
     
     VariableDelayLine () {}
@@ -36,7 +40,7 @@ public:
 protected:
     
 private:
-    AudioBuffer<float> delayLine;
-    HeapBlock<int, true> writePoint;
-    int delayLength;
+    AudioBuffer<float> delayLine; // Store audio.
+    HeapBlock<int, true> writePoint; // Keep track of write point for each channel.
+    int delayLength; // Keep track of delay line length.
 };

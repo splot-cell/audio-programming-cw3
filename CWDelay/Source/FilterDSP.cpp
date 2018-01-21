@@ -15,9 +15,13 @@
                                 
 void LPFilter::setCoef (float frequency, float samplerate)
 {
+    /* Adjust frequency for samplerate. */
     double ft = frequency / samplerate;
+    
+    /* Filter order over 2. */
     float M_2 = (numCoefs - 1) / 2.0;
     
+    /* Calculate each coefficient. */
     for (int i = 0; i < numCoefs; ++i)
     {
         if ( i == M_2)
@@ -27,6 +31,7 @@ void LPFilter::setCoef (float frequency, float samplerate)
         
         /* Hamming window. */
         coefficients[i] *= 0.54 - (0.46 * cos (2.0 * double_Pi * i / (numCoefs - 1)));
+        /* I double checked and it's actually definitely doing it this time! */
     }
     
 }
@@ -36,7 +41,13 @@ void LPFilter::prepareForAudio (float frequency, float samplerate, int numChanne
     setCoef (frequency, samplerate);
     delayLine.setSize (numChannels, numCoefs);
     delayLine.clear();
-    writePoint.calloc (numChannels); // Frees, allocats, and clears.
+    writePoint.calloc (numChannels); // Frees, allocates, and clears. Thanks JUCE.
+}
+
+void LPFilter::freeMemory()
+{
+    delayLine.setSize (0, 0);
+    writePoint.free();
 }
 
 float LPFilter::processSample (float sample, int channel)

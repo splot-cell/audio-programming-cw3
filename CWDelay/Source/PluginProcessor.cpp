@@ -214,9 +214,11 @@ void CwdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
 
 void CwdelayAudioProcessor::releaseResources()
 {
-    /* Free all allocated memory. */
+    /* Free all allocated memory.
+     * JUCE handles all this anyway with the classes used here, but this gives symmetry to this class. */
     delay.freeMemory();
     out.free();
+    filter.freeMemory();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -286,7 +288,9 @@ void CwdelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
         /* Channel by channel processing. */
         for (int channel = 0; channel < totalNumInputChannels; ++channel)
         {
-            /* Write input sample into delayline. */
+            /* Write input sample into delay line.
+             * By writing before reading, and because of how the delay is implemented,
+             * we can have a legitimate delay of zero samples. */
             float in = buffer.getSample (channel, sample) +
                 (out[channel] * feedbackValue);
             delay.writeSample (in, (channel + crossValue) % totalNumInputChannels);

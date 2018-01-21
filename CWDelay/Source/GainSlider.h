@@ -25,9 +25,9 @@ class GainSlider : public Slider
 {
 public:
     String getTextFromValue (double value) override;
-    void setMinDecibelValue (double value) {minDecibelValue = value;}
-    void setDecimalPlaces (int value) {decimalPlaces = value;}
+    void setMinDecibelValue (double value) {minDecibelValue = value;} // Simple set
+    void setDecimalPlaces (int value) {decimalPlaces = value;} // Simple set
 private:
-    float minDecibelValue = -90;
-    int decimalPlaces = 2;
+    float minDecibelValue = -90; // Value to display -inf at
+    int decimalPlaces = 2; // Decimal places to display gain values at
 };

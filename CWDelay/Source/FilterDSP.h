@@ -21,9 +21,13 @@
 class LPFilter
 {
 public:
-    
+    /* Set up the filter coefficients and memeory. */
     void prepareForAudio (float frequency, float samplerate, int numChannels);
     
+    /* Free allocated memory, except for the coefficients. */
+    void freeMemory();
+    
+    /* Filter an individual sample. */
     float processSample (float sample, int channel);
     
     LPFilter (int order) : coefficients (order + 1), numCoefs (order + 1) {}
@@ -33,10 +37,10 @@ public:
 protected:
     
 private:
-    AudioBuffer<float> delayLine;
-    HeapBlock<int> writePoint;
-    HeapBlock<double> coefficients;
-    int numCoefs;
+    AudioBuffer<float> delayLine; // Store audio samples.
+    HeapBlock<int> writePoint; // Keep a track of the write index for each channel.
+    HeapBlock<double> coefficients; // Store filter coefficients.
+    int numCoefs; // Keep a track of number of coefficients.
     
-    void setCoef (float frequency, float samplerate);
+    void setCoef (float frequency, float samplerate); // Private function for calculating coeffs.
 };
