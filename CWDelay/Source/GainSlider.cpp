@@ -16,8 +16,5 @@ String GainSlider::getTextFromValue (double value)
     if (value <= minDecibelValue)
         return String ("-inf ") + getTextValueSuffix();
     
-    if (getNumDecimalPlacesToDisplay() > 0)
-        return String (value, getNumDecimalPlacesToDisplay()) + getTextValueSuffix();
-    
-    return String (roundToInt (value)) + getTextValueSuffix();
+    return String (value, decimalPlaces) + getTextValueSuffix();
 }

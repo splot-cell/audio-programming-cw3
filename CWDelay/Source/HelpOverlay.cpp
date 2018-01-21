@@ -29,7 +29,10 @@ void HelpOverlay::paint (Graphics& g)
         /* If this component is not in front of its siblings bring it in front of them. This is
          * required so the help text is on top of the other GUI controls when it is showing. */
         if (onTop == false)
+        {
             toFront (false);
+            onTop = true;
+        }
         
         /* Give a semi-transparent background to hide the other GUI elements. */
         g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId).withAlpha (0.9f).withMultipliedBrightness (0.5f));
@@ -54,6 +57,7 @@ void HelpOverlay::paint (Graphics& g)
         if (onTop == true)
         {
             toBack();
+            onTop = false;
         }
     }
 }
