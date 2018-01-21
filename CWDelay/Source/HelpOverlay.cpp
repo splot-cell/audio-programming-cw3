@@ -37,14 +37,28 @@ void HelpOverlay::paint (Graphics& g)
         /* Give a semi-transparent background to hide the other GUI elements. */
         g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId).withAlpha (0.9f).withMultipliedBrightness (0.5f));
         
-        g.setOpacity (1.0);
+        /* Grey border. */
         g.setColour (Colours::grey);
-        g.drawRect (getLocalBounds(), 2); // Border.
+        g.drawRect (getLocalBounds(), 2);
         
+        /* White text. */
         g.setColour (Colours::white);
         g.setFont (14.0f);
         
-        String message("Welcome to the third and final installment of...\n>>> Olly's Audio Programming Coursework! <<<\nYou didn't think I wouldn't include a message, did you?!\n\n---\n\nMost of this GUI should be fairly self explanitory, but here are some hints:\n\n Tape Mode adds two LFOs to the delay time to give some (tasteless) WOW and flutter.\n\nCross Mode adds a ping-pong effect to each delay through the feedback loop.\nTry feeding audio to only one channel to hear the effects!\nNote, this will only be effective when the plugin is loaded in a stereo configuration.\n\nThe Filter switch simply turns the 2kHz LPF on or off!\n\n---\n\nAlso, I'm aware the the JUCE logo covers the hover label for this help text upon loading the plugin.\n I wanted it in the bottom right so I did it anyway, patience is a virtue, no?\n\nThank you for reading, friends; this module is now over and so is our journey.");
+        /* Couldn't find a nicer way of doing this really... breaking it up into multiple lines like this
+         * was done purely for readability this end. It could have been a huge long block... ew. */
+        String message("Welcome to the third and final installment of...\n");
+        message += ">>> Olly's Audio Programming Coursework! <<<\n";
+        message += "You didn't think I wouldn't include a message, did you?!\n\n---\n\n";
+        message += "Most of this GUI should be fairly self explanitory, but here are some hints:\n\n";
+        message += "Tape Mode adds two LFOs to the delay time to give some (tasteless) WOW and flutter.\n\n";
+        message += "Cross Mode adds a ping-pong effect to each delay through the feedback loop.\n";
+        message += "Try feeding audio to only one channel to hear the effects!\n";
+        message += "Note, this will only be effective when the plugin is loaded in a stereo configuration.\n\n";
+        message += "The Filter switch simply turns the 2kHz LPF on or off!\n\n---\n\n";
+        message += "Also, I'm aware the the JUCE logo covers the hover label for this help text upon loading the plugin.\n";
+        message += "I wanted it in the bottom right so I did it anyway, patience is a virtue, no?\n\n";
+        message += "Thank you for reading, friends; this module is now over and so is our journey.";
         
         const int maxNumLines = 40; // Arbitrary line limit big enough to display all the abvove text
         
@@ -64,7 +78,9 @@ void HelpOverlay::paint (Graphics& g)
 
 void HelpOverlay::resized()
 {
-    Rectangle<int> r = getLocalBounds();
+    /* Set the position of the "Hover for help" text to be in the bottom right of the component. */
+    
+    const Rectangle<int> r = getLocalBounds();
 
     const int buttonWidth = 100;
     const int buttonHeight = 32;
