@@ -9,13 +9,18 @@
  */
 
 /*
- Class for audio processor. This class manages all the DSP. Uses two custom member objects:
+ Class for audio processor. This class manages all the DSP.
+ 
+ DELAY AND FILTER
+ Uses two custom member objects:
  LPFilter and VariableDelayLine. A HeapBlock<float> is used to store samples for feedback. This
  has been implemented in this way so the plugin can support multiple channels, and is fairly
  extendable.
  
+ LFOs
  In addition, uses JUCE dsp::Oscillator objects as LFOs for modulating the delay time.
  
+ PARAMETERS
  All parameters are managed by the ValueTreeState object, and use the LinearSmoothedValue class
  to keep transitions smoooooth.
  */

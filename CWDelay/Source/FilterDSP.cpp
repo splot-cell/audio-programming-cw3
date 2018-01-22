@@ -54,8 +54,10 @@ float LPFilter::processSample (float sample, int channel)
 {
     float out = 0;
     
+    /* Write the sample into the buffer. */
     delayLine.setSample (channel, writePoint[channel], sample);
     
+    /* Iterate through buffer and coefficients. */
     for (int i = 0; i < numCoefs; ++i)
         out += coefficients[i] * delayLine.getSample (channel, (writePoint[channel] + numCoefs - i) % numCoefs);
     

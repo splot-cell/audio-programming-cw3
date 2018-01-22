@@ -121,7 +121,8 @@ CwdelayAudioProcessorEditor::CwdelayAudioProcessorEditor (CwdelayAudioProcessor&
 
 
     //[Constructor] You can add your own custom stuff here..
-    startTimer (10); // Timer callback required to update for the help component.
+    const int timerUpdate = 10; // mSec
+    startTimer (timerUpdate); // Timer callback required to update for the help component.
     //[/Constructor]
 }
 
