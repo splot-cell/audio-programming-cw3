@@ -16,7 +16,8 @@
  
  In addition, uses JUCE dsp::Oscillator objects as LFOs for modulating the delay time.
  
- 
+ All parameters are managed by the ValueTreeState object, and use the LinearSmoothedValue class
+ to keep transitions smoooooth.
  */
 
 #pragma once
