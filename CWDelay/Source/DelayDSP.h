@@ -10,6 +10,9 @@
 
 /*
  Simple delay line class implementing linear interpolation between samples.
+ 
+ Uses an AudioBuffer<float> for storing audio samples, and HeapBlock<int> for storing
+ sample indexes for each channel.
  */
 
 #pragma once

@@ -8,6 +8,17 @@
  ==============================================================================
  */
 
+/*
+ Class for audio processor. This class manages all the DSP. Uses two custom member objects:
+ LPFilter and VariableDelayLine. A HeapBlock<float> is used to store samples for feedback. This
+ has been implemented in this way so the plugin can support multiple channels, and is fairly
+ extendable.
+ 
+ In addition, uses JUCE dsp::Oscillator objects as LFOs for modulating the delay time.
+ 
+ 
+ */
+
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"

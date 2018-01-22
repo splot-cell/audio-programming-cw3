@@ -26,6 +26,7 @@ HelpOverlay::~HelpOverlay()
 
 void HelpOverlay::paint (Graphics& g)
 {
+    /* Check whether mouse is over the hover button, and paint the help text if so. */
     if (helpButton.isMouseOver())
     {
         /* If this component is not in front of its siblings bring it in front of them. This is
@@ -50,7 +51,7 @@ void HelpOverlay::paint (Graphics& g)
         /* Couldn't find a nicer way of doing this really... breaking it up into multiple lines like this
          * was done purely for readability this end. It could have been a huge long block... ew. */
         String message("Welcome to the third and final installment of...\n");
-        message += ">>> Olly's Audio Programming Coursework! <<<\n";
+        message += ">>> OLLY'S WONDEROUS COURSEWORK SUBMISSION! <<<\n";
         message += "You didn't think I wouldn't include a message, did you?!\n\n---\n\n";
         message += "Most of this GUI should be fairly self explanitory, but here are some hints:\n\n";
         message += "Tape Mode adds two LFOs to the delay time to give some (tasteless) WOW and flutter.\n\n";
@@ -81,7 +82,7 @@ void HelpOverlay::paint (Graphics& g)
 void HelpOverlay::resized()
 {
     /* Set the position of the "Hover for help" text to be in the bottom right of the component and
-     * set label size. */
+     * set its size. */
     
     const Rectangle<int> r = getLocalBounds();
 

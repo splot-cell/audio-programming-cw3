@@ -37,10 +37,10 @@
     This allows easy updating of paramter changes.
  
     HELP OVERLAY
-    The HelpOverlay component, which displays the help text, is implemented using a timer callback
-    hence the timer base class. This is because the text shows when the use hovers the mouse over a
-    certain part of the window. There is no JUCE callback for this. Instead, the timer callback
-    triggers the component to check if the mouse if hovering and update itself.
+    The HelpOverlay component, which displays the help text, is updated using a timer callback in this class
+    hence the timer base class. This is because the text shows when the user hovers the mouse over a
+    certain part of the window. There is no specific callback method for detecting mouse hover. Instead, the timer callback
+    triggers an update of the component.
  
     GUI DESIGN
     The GUI layout is based on a grid. The numberOfColumns and numberOfRows members keep track of
@@ -58,8 +58,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    /* typedefs for ease. Placed here so inside the class, but have to be public so ScopedPointer
-     * can access them. */
+    /* typedefs for ease. Placed here so inside the class, have to be public to avoid error. */
     typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
     typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
 
