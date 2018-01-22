@@ -8,7 +8,7 @@
     <key>CFBundleIconFile</key>
     <string></string>
     <key>CFBundleIdentifier</key>
-    <string>com.yourcompany.CWDelay</string>
+    <string>com.OllySeber.CWDelay</string>
     <key>CFBundleName</key>
     <string>CWDelay</string>
     <key>CFBundleDisplayName</key>
@@ -29,9 +29,9 @@
     <array>
       <dict>
         <key>name</key>
-        <string>yourcompany: CWDelay</string>
+        <string>Olly Seber: WONDEROUS DELAY</string>
         <key>description</key>
-        <string>CWDelay</string>
+        <string>A wonderful delay for your taste buds.</string>
         <key>factoryFunction</key>
         <string>CWDelayAUFactory</string>
         <key>manufacturer</key>

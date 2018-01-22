@@ -10,6 +10,9 @@
 
 /*
  Low-pass FIR filter class.
+ 
+ Stores audio samples using a JUCE AudioBuffer<float>. Stores filter coefficients using a JUCE
+ HeapBlock<double>.
  */
 
 #pragma once

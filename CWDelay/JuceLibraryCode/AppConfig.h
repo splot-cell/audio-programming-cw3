@@ -315,13 +315,13 @@
  #define JucePlugin_Enable_IAA             0
 #endif
 #ifndef  JucePlugin_Name
- #define JucePlugin_Name                   "CWDelay"
+ #define JucePlugin_Name                   "WONDEROUS DELAY"
 #endif
 #ifndef  JucePlugin_Desc
- #define JucePlugin_Desc                   "CWDelay"
+ #define JucePlugin_Desc                   "A wonderful delay for your taste buds."
 #endif
 #ifndef  JucePlugin_Manufacturer
- #define JucePlugin_Manufacturer           "yourcompany"
+ #define JucePlugin_Manufacturer           "Olly Seber"
 #endif
 #ifndef  JucePlugin_ManufacturerWebsite
  #define JucePlugin_ManufacturerWebsite    ""
@@ -381,7 +381,7 @@
  #define JucePlugin_AUManufacturerCode     JucePlugin_ManufacturerCode
 #endif
 #ifndef  JucePlugin_CFBundleIdentifier
- #define JucePlugin_CFBundleIdentifier     com.yourcompany.CWDelay
+ #define JucePlugin_CFBundleIdentifier     com.OllySeber.CWDelay
 #endif
 #ifndef  JucePlugin_RTASCategory
  #define JucePlugin_RTASCategory           ePlugInCategory_None
@@ -423,5 +423,5 @@
  #define JucePlugin_IAASubType             JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_IAAName
- #define JucePlugin_IAAName                "yourcompany: CWDelay"
+ #define JucePlugin_IAAName                "Olly Seber: WONDEROUS DELAY"
 #endif

@@ -30,7 +30,7 @@ void LPFilter::setCoef (float frequency, float samplerate)
             coefficients[i] = sin (2. * double_Pi * ft * (i - M_2)) / (double_Pi * (i - M_2));
         
         /* Hamming window. */
-        coefficients[i] *= 0.54 - (0.46 * cos (2.0 * double_Pi * i / (numCoefs - 1)));
+        coefficients[i] *= 0.54 - (0.46 * cos (2.0 * double_Pi * i / (numCoefs - 1.f)));
         /* I double checked and it's actually definitely doing it this time! */
     }
     
