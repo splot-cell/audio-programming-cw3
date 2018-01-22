@@ -20,6 +20,9 @@
  LFOs
  In addition, uses JUCE dsp::Oscillator objects as LFOs for modulating the delay time.
  
+ THIS REQUIRES C++ 14. THIS IS ENABLED IN THE PROJUCER PROJECT, BUT IF ENCOUNTERING BUILD ERRORS
+ PLEASE DOUBLE CHECK THE SETTINGS.
+ 
  PARAMETERS
  All parameters are managed by the ValueTreeState object, and use the LinearSmoothedValue class
  to keep transitions smoooooth.
