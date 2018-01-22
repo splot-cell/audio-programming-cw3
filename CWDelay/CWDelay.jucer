@@ -10,7 +10,8 @@
               pluginCode="No4k" pluginChannelConfigs="" pluginIsSynth="0" pluginWantsMidiIn="0"
               pluginProducesMidiOut="0" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="CWDelayAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.CWDelay"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="5.2.0">
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="5.2.0"
+              userNotes="When exporting to Xcode, I get some warnings about missing files. Not sure why it's looking for those files, they're not necessary! They're for building the standalone/VST versions of the plugin, which I have disabled...">
   <MAINGROUP id="wNR8V0" name="CWDelay">
     <GROUP id="{49A20CC3-170E-F126-B0FE-1A249EF2E4AF}" name="Source">
       <GROUP id="{F57AD7AA-637F-BF4D-6181-F9B24774E4C5}" name="DSP">

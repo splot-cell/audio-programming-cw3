@@ -136,12 +136,16 @@ private:
     static float LFO1Func(float angle);
     
     /* LFO parameters.
-     * Must also be static in order to be used by above functions. */
-    constexpr static const float LFOdepth = 0.001; // in mSec
-    constexpr static const float LFO1depth = 0.01; // in mSec
+     * Must also be static in order to be used by above functions.
+     * constexpr as can be evaluated at compile time. */
+    static constexpr float LFOdepth = 0.001; // in mSec
+    static constexpr float LFO1depth = 0.01; // in mSec
     
-    /* LFOs will vary the delay size, so be sure to take this into account when setting delay buffer length. */
-    constexpr static const float maxLFOOffset = LFOdepth + LFO1depth;
+    /* LFOs will vary the delay size, so be sure to take this into account when setting delay buffer length.
+     * LFOs vary by a magnitude of LFOdepth around a centre point LFOdepth - they are unipolar.
+     * Therefore max value is actually 2x LFOdepth for each LFO, hence multiply by two.
+     */
+    static constexpr float maxLFOOffset = 2.f * (LFOdepth + LFO1depth);
     
     /* Used at object instantiation, so not required to be static, but must be above the LFO members. */
     const int LFOResolution = 50;
